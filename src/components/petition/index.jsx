@@ -22,20 +22,37 @@ function loadFile(url, callback) {
 }
 
 export default function Petition() {
+  const [isHeadingActive, setIsHeadingActive] = useState(true);
+  const [isDetailsActive1, setIsDetailsActive1] = useState(false);
+  const [isDetailsActive2, setIsDetailsActive2] = useState(false);
+
   const [highCourt, setHighCourt] = useState("");
   const [juridiction, setJuridiction] = useState("");
-  const [petitionNumber, setPetitionNumber] = useState("");
+  const [petitiontype, setPetitiontype] = useState("");
+
   const [petitionerName, setPetitionerName] = useState("");
+  const [petitionerAdressLine1, setPetitionerAdressLine1] = useState("");
+  const [petitionerAdressLine2, setPetitionerAdressLine2] = useState("");
+
   const [respondentName, setRespondentName] = useState("");
-  const [petitionTitle, setPetitionTitle] = useState("");
+  const [respondentAdress1, setRespondentAdress1] = useState("");
+  const [respondentAdress2, setRespondentAdress2] = useState("");
+
+  const [advocateFilledBy, setAdvocateFilledBy] = useState("");
+  const [advocateAddress1, setAdvocateAddress1] = useState("");
+  const [advocateAddress2, setAdvocateAddress2] = useState("");
+
+  const [petitionNumber, setPetitionNumber] = useState("");
   const [place, setPlace] = useState("");
   const [date, setDate] = useState("");
-  const [advocateFilledBy, setAdvocateFilledBy] = useState("");
-  const [advocateAddress, setAdvocateAddress] = useState("");
+
   const [petFillingtype, setPetFillingtype] = useState("");
+
   const [dateOfListing, setDateOfListing] = useState("");
-  const [respondentAdress, setRespondentAdress] = useState("");
-  const [petitionerAdress, setPetitionerAdress] = useState("");
+
+  const [isUregent, setIsUregent] = useState(false);
+
+  const [petitionTitle, setPetitionTitle] = useState("");
 
   const handleDocProcessing = async () => {
     await genDocx();
@@ -53,18 +70,22 @@ export default function Petition() {
         doc.setData({
           HIGHCOURT: highCourt.toUpperCase(),
           JURIDICTION: juridiction.toUpperCase(),
+          PETITIONTYPE: petitiontype.toUpperCase(),
           PETITIONNUMBER: petitionNumber.toUpperCase(),
           PETITIONERNAME: petitionerName.toUpperCase(),
           RESPONDENTNAME: respondentName.toUpperCase(),
           PETTITLE: petitionTitle.toUpperCase(),
           PETPLACE: place.toUpperCase(),
           PETDATE: date,
-          ADOVOCATEFILLEDBY: advocateFilledBy.toUpperCase(),
-          ADVOCATEADDRESS: advocateAddress.toUpperCase(),
-          PETFILLINGTYPE: petFillingtype.toUpperCase(),
           DATEOFLISTING: dateOfListing,
-          RESPONDENTADDRESS: respondentAdress.toUpperCase(),
-          PETITIONERADDRESS: petitionerAdress.toUpperCase(),
+          PETITIONERADDRESS1: petitionerAdressLine1.toUpperCase(),
+          PETITIONERADDRESS2: petitionerAdressLine2.toUpperCase(),
+          RESPONDENTADDRESS1: respondentAdress1.toUpperCase(),
+          RESPONDENTADDRESS2: respondentAdress2.toUpperCase(),
+          ADOVOCATEFILLEDBY: advocateFilledBy.toUpperCase(),
+          ADVOCATEADDRESS1: advocateAddress1.toUpperCase(),
+          ADVOCATEADDRESS2: advocateAddress2.toUpperCase(),
+          PETFILLINGTYPE: petFillingtype.toUpperCase(),
         });
         try {
           // render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)
@@ -111,145 +132,250 @@ export default function Petition() {
     );
   };
 
+  const handleMainheader = () => {
+    setIsHeadingActive(false);
+    setIsDetailsActive1(true);
+  };
+
+  const handleDetailes1 = () => {
+    setIsHeadingActive(false);
+    setIsDetailsActive1(false);
+    setIsDetailsActive2(true);
+  };
   return (
     <>
-      <div className="container p-5">
-        <form>
+      <div className={`p-5 ${styles.formContainer}`}>
+        {isHeadingActive && (
           <div className="row">
             <div className="col-lg-6">
               <CustomInput
-                label="HIGHCOURT:"
+                label="Select High Court*"
                 type="text"
                 isRequired={true}
                 minLength="3"
                 maxLength="50"
-                placeholder="IN THE HIGH COURT OF DELHI AT NEW DELHI"
+                placeholder="Name of High Court"
                 onValueChange={(e) => setHighCourt(e)}
               />
-
               <CustomInput
-                label="JURIDICTION:"
+                label="Select Jurisdiction*"
                 type="text"
                 isRequired={true}
                 minLength="3"
                 maxLength="50"
-                placeholder="ORDINARY ORIGINAL JURISDICTION"
+                placeholder="Jurisdiction"
                 onValueChange={(e) => setJuridiction(e)}
               />
-
               <CustomInput
-                label="PETITIONNUMBER:"
-                type="text"
-                isRequired={true}
-                minLength="3"
-                maxLength="50"
-                placeholder="W.P.(C) NO. ______ OF"
-                onValueChange={(e) => setPetitionNumber(e)}
-              />
-
-              <CustomInput
-                label="PETITIONER NAME:"
+                label="Select Type of Petition*"
                 type="text"
                 isRequired={true}
                 minLength="3"
                 maxLength="20"
-                placeholder="John Doe"
+                placeholder="Type of Petition"
+                onValueChange={(e) => setPetitiontype(e)}
+              />
+
+              <button
+                type="button"
+                className="btn btn-primary ml-3"
+                onClick={handleMainheader}
+              >
+                Next <span>{">>"}</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {isDetailsActive1 && (
+          <div className="row">
+            <div className="col-lg-6">
+              <h4 className="p-2">DETAILS OF THE PETITIONER</h4>
+              <CustomInput
+                label="Name of the Petitioner*"
+                type="text"
+                isRequired={true}
+                minLength="3"
+                maxLength="20"
+                placeholder="Name of Petitioner"
                 onValueChange={(e) => setPetitionerName(e)}
               />
 
               <CustomInput
-                label="RESPONDENT NAME"
+                label="Address of the Petitioner*"
+                isRequired={true}
+                minLength="3"
+                maxLength="50"
+                placeholder="Address Line 1"
+                onValueChange={(e) => setPetitionerAdressLine1(e)}
+              />
+
+              <CustomInput
+                isRequired={true}
+                minLength="3"
+                maxLength="50"
+                placeholder="Address Line 2"
+                onValueChange={(e) => setPetitionerAdressLine2(e)}
+              />
+
+              <h4 className="p-2">DETAILS OF THE RESPONDENT</h4>
+
+              <CustomInput
+                label="Name of the Respondent*"
                 type="text"
                 isRequired={true}
                 minLength="3"
                 maxLength="20"
-                placeholder="Jane Doe"
+                placeholder="Name of Petitioner"
                 onValueChange={(e) => setRespondentName(e)}
               />
 
-              <CustomTextArea
-                label="PETITION TITLE"
+              <CustomInput
+                label="Address of the Respondent*"
                 isRequired={true}
                 minLength="3"
                 maxLength="50"
-                placeholder="WRIT PETITION UNDER ARTICLE 226 OF THE CONSTITUTION OF INDIA"
-                onValueChange={(e) => setPetitionTitle(e)}
+                placeholder="Address Line 1"
+                onValueChange={(e) => setRespondentAdress1(e)}
               />
 
               <CustomInput
-                label="PLACE"
-                type="text"
                 isRequired={true}
                 minLength="3"
-                maxLength="20"
-                placeholder="NEW DELHI"
-                onValueChange={(e) => setPlace(e)}
-              />
-
-              <CustomDatePicker
-                label="Date"
-                onValueChange={(e) => setDate(e)}
+                maxLength="50"
+                placeholder="Address Line 2"
+                onValueChange={(e) => setRespondentAdress2(e)}
               />
             </div>
+
             <div className="col-lg-6">
+              <h4 className="p-2">DETAILS OF THE PETITIONER’s ADVOCATE</h4>
+
               <CustomInput
-                label="ADOVOCATE FILLED BY"
+                label="Filed By*"
                 type="text"
                 isRequired={true}
                 minLength="3"
                 maxLength="20"
-                placeholder="123 ADVOCATES"
+                placeholder="Petitioner’s Advocate Name"
                 onValueChange={(e) => setAdvocateFilledBy(e)}
               />
-              <CustomTextArea
-                label="ADVOCATE ADDRESS"
+
+              <CustomInput
+                label="Address of the Advocate*"
                 isRequired={true}
                 minLength="3"
                 maxLength="50"
-                placeholder="NEW DELHI 1234567"
-                onValueChange={(e) => setAdvocateAddress(e)}
+                placeholder="Address Line 1"
+                onValueChange={(e) => setAdvocateAddress1(e)}
               />
+
               <CustomInput
-                label="CASE TYPE"
+                isRequired={true}
+                minLength="3"
+                maxLength="50"
+                placeholder="Address Line 2"
+                onValueChange={(e) => setAdvocateAddress2(e)}
+              />
+
+              <button
+                type="button"
+                className="btn btn-primary ml-3"
+                onClick={handleDetailes1}
+              >
+                Next <span>{">>"}</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {isDetailsActive2 && (
+          <div className="row">
+            <div className="col-lg-6">
+              <CustomInput
+                label="Petition Number"
+                type="text"
+                isRequired={true}
+                minLength="3"
+                maxLength="50"
+                placeholder="Petition Number"
+                onValueChange={(e) => setPetitionNumber(e)}
+              />
+              <div className="row">
+                <div className="col-lg-6">
+                  <CustomInput
+                    label="Place"
+                    type="text"
+                    isRequired={true}
+                    minLength="3"
+                    maxLength="20"
+                    placeholder="Place"
+                    onValueChange={(e) => setPlace(e)}
+                  />
+                </div>
+                <div className="col-lg-6">
+                  <CustomDatePicker
+                    label="Date"
+                    placeholder={"DD/MM/YYYY"}
+                    onValueChange={(e) => setDate(e)}
+                  />
+                </div>
+              </div>
+
+              <CustomInput
+                label="Filing Type"
                 type="text"
                 isRequired={true}
                 minLength="3"
                 maxLength="20"
-                placeholder="123 ADVOCATES"
+                placeholder="Filing Type"
                 onValueChange={(e) => setPetFillingtype(e)}
               />
+
               <CustomDatePicker
-                label="Date of Lsiting"
+                label="Date for Listing"
+                placeholder={"DD/MM/YYYY"}
                 onValueChange={(e) => setDateOfListing(e)}
               />
-              <CustomTextArea
-                label="RESPONDENT ADDRESS"
-                isRequired={true}
-                minLength="3"
-                maxLength="50"
-                placeholder="NEW DELHI 1234567"
-                onValueChange={(e) => setRespondentAdress(e)}
-              />
 
-              <CustomTextArea
-                label="PETITIONER ADDRESS"
-                isRequired={true}
-                minLength="3"
-                maxLength="50"
-                placeholder="NEW DELHI 1234567"
-                onValueChange={(e) => setPetitionerAdress(e)}
-              />
+              <div className="form-group p-2">
+                <label className="p-2">Urgent Application?</label>
+                <div className="d-flex">
+                  <div className="form-check">
+                    <input className="form-check-input" type="radio" />
+                    <label className="form-check-label">Yes</label>
+                  </div>
+                  &nbsp;&nbsp;
+                  <div className="form-check">
+                    <input className="form-check-input" type="radio" />
+                    <label className="form-check-label">No</label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-group p-2">
+                <label className="p-2">No. of Annexures</label>
+                <select className="form-control w-25">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div>
+
+              <button
+                type="button"
+                className="btn btn-primary ml-2"
+                onClick={handleDocProcessing}
+              >
+                GENERATE TEMPLATE
+              </button>
             </div>
 
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleDocProcessing}
-            >
-              Generate Template
-            </button>
+            <div className="col-lg-6"></div>
           </div>
-        </form>
+        )}
       </div>
     </>
   );

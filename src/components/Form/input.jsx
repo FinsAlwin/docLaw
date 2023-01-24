@@ -6,7 +6,8 @@ export default function CustomInput(props) {
   return (
     <>
       <div className="form-group p-2">
-        <label>{props.label}</label>
+        {props.label && <label className="p-2">{props.label}</label>}
+
         <input
           type={props.type}
           required={props.isRequired}

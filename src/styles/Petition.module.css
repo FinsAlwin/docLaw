@@ -1,17 +1,2 @@
 .formContainer {
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.btnContainer {
-  padding: 20px;
-}
-
-.cardTransition {
-  transition: all ease 2s;
-}
-
-.webviewer {
 }

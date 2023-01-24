@@ -14,11 +14,12 @@ export default function CustomDatePicker(props) {
   return (
     <>
       <div className="form-group p-2">
-        <label>{props.label}</label>
+        <label className="p-2">{props.label}</label>
         <DatePicker
-          className={styles.datePicker}
+          className={`form-control ${styles.datePicker}`}
           selected={startDate}
           onChange={(date) => handleChange(date)}
+          placeholderText={props.placeholder}
         />
       </div>
     </>
