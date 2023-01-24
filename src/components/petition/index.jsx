@@ -3,7 +3,7 @@ import Docxtemplater from "docxtemplater";
 import { base_url } from "@/config";
 import { useState } from "react";
 import CustomInput from "../Form/input";
-import CustomTextArea from "../Form/textarea";
+import CustomTextArea from "../Form/textArea";
 import CustomDatePicker from "../Form/datePicker";
 
 import PizZip from "pizzip";
