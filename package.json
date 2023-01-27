@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "npm run download-webviewer",
+    "download-webviewer": "npx @pdftron/webviewer-downloader --webviewerLocation ./public/webviewer/lib"
   },
   "dependencies": {
     "@next/font": "13.1.4",
@@ -14,6 +16,7 @@
     "axios": "^1.2.3",
     "bootstrap": "^5.2.3",
     "docx": "^7.8.2",
+    "docx-templates": "^4.9.2",
     "docxtemplater": "^3.33.0",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.4",
@@ -29,6 +32,8 @@
     "react-bootstrap-date-picker": "^5.1.0",
     "react-datepicker": "^4.8.0",
     "react-doc-viewer": "^0.1.5",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-file-viewer": "^1.2.1",
+    "swr": "^2.0.2"
   }
 }

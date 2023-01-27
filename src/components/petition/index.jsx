@@ -5,6 +5,9 @@ import { useState } from "react";
 import CustomInput from "../Form/input";
 import CustomTextArea from "../Form/textArea";
 import CustomDatePicker from "../Form/datePicker";
+import PetitionPreview from "./petitionPreview";
+
+import useSWR from "swr";
 
 import PizZip from "pizzip";
 import { saveAs } from "file-saver";
@@ -20,6 +23,8 @@ if (typeof window !== "undefined") {
 function loadFile(url, callback) {
   PizZipUtils.getBinaryContent(url, callback);
 }
+
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 export default function Petition() {
   const [isHeadingActive, setIsHeadingActive] = useState(true);
@@ -55,7 +60,28 @@ export default function Petition() {
   const [petitionTitle, setPetitionTitle] = useState("");
 
   const handleDocProcessing = async () => {
-    await genDocx();
+    // await genDocx();
+
+    const payload = {
+      courtName: highCourt,
+      juridiction: juridiction,
+      petitionNumber: petitionNumber,
+      petitionerName: petitionerName,
+      responsentName: respondentName,
+    };
+    const res = await fetch(`/api/generateDoc`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const dataRes = await res.json();
+
+    if (res.status == 200) {
+      window.open(dataRes.url);
+    }
   };
 
   const genDocx = async () => {
@@ -373,7 +399,9 @@ export default function Petition() {
               </button>
             </div>
 
-            <div className="col-lg-6"></div>
+            <div className="col-lg-6">
+              {/* <PetitionPreview url={"http://localhost:3000/files/alwin.docx"} /> */}
+            </div>
           </div>
         )}
       </div>

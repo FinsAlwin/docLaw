@@ -17,6 +17,8 @@ import {
   Tab,
   TabStopType,
   TabStopPosition,
+  WidthType,
+  BorderStyle,
 } from "docx";
 
 import { saveAs } from "file-saver";
@@ -89,61 +91,316 @@ export default function Test() {
     heading: HeadingLevel.HEADING_1,
     spacing: {
       before: 70,
+      after: 100,
+    },
+  });
+
+  const table = new Table({
+    columnWidths: [6000, 3000],
+    rows: [
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "PETITIONERNAME",
+                    bold: false,
+                    font: "Bookman Old Style",
+                    size: 26,
+                    color: "000000",
+                  }),
+                ],
+                heading: HeadingLevel.HEADING_1,
+                spacing: {
+                  before: 70,
+                  after: 70,
+                },
+              }),
+            ],
+            borders: {
+              left: {
+                color: "FFFFFF",
+              },
+              right: {
+                color: "FFFFFF",
+              },
+              top: {
+                color: "FFFFFF",
+              },
+              bottom: { color: "FFFFFF" },
+            },
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "…PETITIONER",
+                    bold: false,
+                    font: "Bookman Old Style",
+                    size: 26,
+                    color: "000000",
+                  }),
+                ],
+                heading: HeadingLevel.HEADING_1,
+                spacing: {
+                  before: 70,
+                  after: 70,
+                },
+              }),
+            ],
+            borders: {
+              left: {
+                color: "FFFFFF",
+              },
+              right: {
+                color: "FFFFFF",
+              },
+              top: {
+                color: "FFFFFF",
+              },
+              bottom: { color: "FFFFFF" },
+            },
+          }),
+        ],
+        height: { value: 500 },
+      }),
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "VERSUS",
+                    bold: false,
+                    font: "Bookman Old Style",
+                    size: 26,
+                    color: "000000",
+                  }),
+                ],
+                heading: HeadingLevel.HEADING_1,
+                alignment: AlignmentType.CENTER,
+                spacing: {
+                  before: 70,
+                  after: 70,
+                },
+              }),
+            ],
+            borders: {
+              left: {
+                color: "FFFFFF",
+              },
+              right: {
+                color: "FFFFFF",
+              },
+              top: {
+                color: "FFFFFF",
+              },
+              bottom: {
+                color: "FFFFFF",
+              },
+            },
+            columnSpan: 2,
+          }),
+        ],
+        height: { value: 500 },
+        cantSplit: true,
+      }),
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "RESPONDENTNAME",
+                    bold: false,
+                    font: "Bookman Old Style",
+                    size: 26,
+                    color: "000000",
+                  }),
+                ],
+                heading: HeadingLevel.HEADING_1,
+                spacing: {
+                  before: 70,
+                },
+              }),
+            ],
+            borders: {
+              left: {
+                color: "FFFFFF",
+              },
+              right: {
+                color: "FFFFFF",
+              },
+              top: {
+                color: "FFFFFF",
+              },
+              bottom: { color: "FFFFFF" },
+            },
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "…RESPONDENT",
+                    bold: false,
+                    font: "Bookman Old Style",
+                    size: 26,
+                    color: "000000",
+                  }),
+                ],
+                heading: HeadingLevel.HEADING_1,
+                spacing: {
+                  before: 70,
+                  after: 70,
+                },
+              }),
+            ],
+            borders: {
+              left: {
+                color: "FFFFFF",
+              },
+              right: {
+                color: "FFFFFF",
+              },
+              top: {
+                color: "FFFFFF",
+              },
+              bottom: { color: "FFFFFF" },
+            },
+          }),
+        ],
+        height: { value: 500 },
+      }),
+    ],
+  });
+
+  const paragraphTable = new Paragraph({
+    children: [table],
+    heading: HeadingLevel.HEADING_1,
+    spacing: {
+      before: 70,
+    },
+  });
+
+  const paragraphIndex = new Paragraph({
+    children: [
+      new TextRun({
+        text: "INDEX",
+        bold: true,
+        font: "Bookman Old Style",
+        size: 26,
+        color: "000000",
+      }),
+    ],
+    heading: HeadingLevel.HEADING_1,
+    alignment: AlignmentType.CENTER,
+    spacing: {
       after: 70,
+    },
+  });
+
+  const tableIndex = new Table({
+    columnWidths: [1000, 6000],
+    rows: [
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "S. No.",
+                    bold: true,
+                    font: "Bookman Old Style",
+                    size: 26,
+                    color: "000000",
+                  }),
+                ],
+                heading: HeadingLevel.HEADING_1,
+                alignment: AlignmentType.CENTER,
+                spacing: {
+                  before: 70,
+                  after: 70,
+                },
+              }),
+            ],
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "Particular",
+                    bold: true,
+                    font: "Bookman Old Style",
+                    size: 26,
+                    color: "000000",
+                  }),
+                ],
+                heading: HeadingLevel.HEADING_1,
+                alignment: AlignmentType.CENTER,
+                spacing: {
+                  before: 70,
+                  after: 70,
+                },
+              }),
+            ],
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "Page no.",
+                    bold: true,
+                    font: "Bookman Old Style",
+                    size: 26,
+                    color: "000000",
+                  }),
+                ],
+                heading: HeadingLevel.HEADING_1,
+                alignment: AlignmentType.CENTER,
+                spacing: {
+                  before: 70,
+                  after: 70,
+                },
+              }),
+            ],
+          }),
+        ],
+        height: { value: 500 },
+      }),
+    ],
+  });
+
+  const paragraphTableIndex = new Paragraph({
+    children: [tableIndex],
+    heading: HeadingLevel.HEADING_1,
+    spacing: {
+      before: 70,
     },
   });
 
   const doc = new Document({
     sections: [
       {
-        properties: {
-          type: SectionType.CONTINUOUS,
-        },
         children: [
           new Paragraph({
-            frame: {
-              position: {
-                x: 1000,
-                y: 3000,
-              },
-              width: 4000,
-              height: 1000,
-              anchor: {
-                horizontal: FrameAnchorType.MARGIN,
-                vertical: FrameAnchorType.MARGIN,
-              },
-              alignment: {
-                x: HorizontalPositionAlign.CENTER,
-                y: VerticalPositionAlign.TOP,
-              },
-            },
-            border: {
-              top: {
-                color: "auto",
-                space: 1,
-                value: "single",
-                size: 6,
-              },
-              bottom: {
-                color: "auto",
-                space: 1,
-                value: "single",
-                size: 6,
-              },
-              left: {
-                color: "auto",
-                space: 1,
-                value: "single",
-                size: 6,
-              },
-              right: {
-                color: "auto",
-                space: 1,
-                value: "single",
-                size: 6,
-              },
-            },
-            children: [paragraph1, paragraph2, paragraph3, paragraph4],
+            children: [
+              paragraph1,
+              paragraph2,
+              paragraph3,
+              paragraph4,
+              paragraphTable,
+              paragraphIndex,
+              paragraphTableIndex,
+            ],
           }),
         ],
       },
