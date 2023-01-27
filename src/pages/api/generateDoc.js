@@ -56,251 +56,251 @@ export default async function handler(req, res) {
       },
     });
 
-    const paragraphJuridiction = new Paragraph({
-      children: [
-        new TextRun({
-          text: `${juridiction}`,
-          bold: true,
-          font: "Bookman Old Style",
-          size: 26,
-          color: "000000",
-        }),
-      ],
-      heading: HeadingLevel.HEADING_1,
-      alignment: AlignmentType.CENTER,
-      spacing: {
-        before: 70,
-        after: 70,
-      },
-    });
+    // const paragraphJuridiction = new Paragraph({
+    //   children: [
+    //     new TextRun({
+    //       text: `${juridiction}`,
+    //       bold: true,
+    //       font: "Bookman Old Style",
+    //       size: 26,
+    //       color: "000000",
+    //     }),
+    //   ],
+    //   heading: HeadingLevel.HEADING_1,
+    //   alignment: AlignmentType.CENTER,
+    //   spacing: {
+    //     before: 70,
+    //     after: 70,
+    //   },
+    // });
 
-    const paragraphPetitionNumber = new Paragraph({
-      children: [
-        new TextRun({
-          text: `${petitionNumber}`,
-          bold: true,
-          font: "Bookman Old Style",
-          size: 26,
-          color: "000000",
-        }),
-      ],
-      heading: HeadingLevel.HEADING_1,
-      alignment: AlignmentType.CENTER,
-      spacing: {
-        before: 70,
-        after: 70,
-      },
-    });
+    // const paragraphPetitionNumber = new Paragraph({
+    //   children: [
+    //     new TextRun({
+    //       text: `${petitionNumber}`,
+    //       bold: true,
+    //       font: "Bookman Old Style",
+    //       size: 26,
+    //       color: "000000",
+    //     }),
+    //   ],
+    //   heading: HeadingLevel.HEADING_1,
+    //   alignment: AlignmentType.CENTER,
+    //   spacing: {
+    //     before: 70,
+    //     after: 70,
+    //   },
+    // });
 
-    const tableVersus = new Table({
-      columnWidths: [6000, 3000],
-      rows: [
-        new TableRow({
-          children: [
-            new TableCell({
-              children: [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `${petitionerName}`,
-                      bold: false,
-                      font: "Bookman Old Style",
-                      size: 26,
-                      color: "000000",
-                    }),
-                  ],
-                  heading: HeadingLevel.HEADING_1,
-                  spacing: {
-                    before: 70,
-                    after: 70,
-                  },
-                }),
-              ],
-              borders: {
-                left: {
-                  color: "FFFFFF",
-                },
-                right: {
-                  color: "FFFFFF",
-                },
-                top: {
-                  color: "FFFFFF",
-                },
-                bottom: { color: "FFFFFF" },
-              },
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: "…PETITIONER",
-                      bold: false,
-                      font: "Bookman Old Style",
-                      size: 26,
-                      color: "000000",
-                    }),
-                  ],
-                  heading: HeadingLevel.HEADING_1,
-                  spacing: {
-                    before: 70,
-                    after: 70,
-                  },
-                }),
-              ],
-              borders: {
-                left: {
-                  color: "FFFFFF",
-                },
-                right: {
-                  color: "FFFFFF",
-                },
-                top: {
-                  color: "FFFFFF",
-                },
-                bottom: { color: "FFFFFF" },
-              },
-            }),
-          ],
-          height: { value: 500 },
-        }),
-        new TableRow({
-          children: [
-            new TableCell({
-              children: [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: "VERSUS",
-                      bold: false,
-                      font: "Bookman Old Style",
-                      size: 26,
-                      color: "000000",
-                    }),
-                  ],
-                  heading: HeadingLevel.HEADING_1,
-                  alignment: AlignmentType.CENTER,
-                  spacing: {
-                    before: 70,
-                    after: 70,
-                  },
-                }),
-              ],
-              borders: {
-                left: {
-                  color: "FFFFFF",
-                },
-                right: {
-                  color: "FFFFFF",
-                },
-                top: {
-                  color: "FFFFFF",
-                },
-                bottom: {
-                  color: "FFFFFF",
-                },
-              },
-              columnSpan: 2,
-            }),
-          ],
-          height: { value: 500 },
-          cantSplit: true,
-        }),
-        new TableRow({
-          children: [
-            new TableCell({
-              children: [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `${responsentName}`,
-                      bold: false,
-                      font: "Bookman Old Style",
-                      size: 26,
-                      color: "000000",
-                    }),
-                  ],
-                  heading: HeadingLevel.HEADING_1,
-                  spacing: {
-                    before: 70,
-                  },
-                }),
-              ],
-              borders: {
-                left: {
-                  color: "FFFFFF",
-                },
-                right: {
-                  color: "FFFFFF",
-                },
-                top: {
-                  color: "FFFFFF",
-                },
-                bottom: { color: "FFFFFF" },
-              },
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: "…RESPONDENT",
-                      bold: false,
-                      font: "Bookman Old Style",
-                      size: 26,
-                      color: "000000",
-                    }),
-                  ],
-                  heading: HeadingLevel.HEADING_1,
-                  spacing: {
-                    before: 70,
-                    after: 70,
-                  },
-                }),
-              ],
-              borders: {
-                left: {
-                  color: "FFFFFF",
-                },
-                right: {
-                  color: "FFFFFF",
-                },
-                top: {
-                  color: "FFFFFF",
-                },
-                bottom: { color: "FFFFFF" },
-              },
-            }),
-          ],
-          height: { value: 500 },
-        }),
-      ],
-    });
+    // const tableVersus = new Table({
+    //   columnWidths: [6000, 3000],
+    //   rows: [
+    //     new TableRow({
+    //       children: [
+    //         new TableCell({
+    //           children: [
+    //             new Paragraph({
+    //               children: [
+    //                 new TextRun({
+    //                   text: `${petitionerName}`,
+    //                   bold: false,
+    //                   font: "Bookman Old Style",
+    //                   size: 26,
+    //                   color: "000000",
+    //                 }),
+    //               ],
+    //               heading: HeadingLevel.HEADING_1,
+    //               spacing: {
+    //                 before: 70,
+    //                 after: 70,
+    //               },
+    //             }),
+    //           ],
+    //           borders: {
+    //             left: {
+    //               color: "FFFFFF",
+    //             },
+    //             right: {
+    //               color: "FFFFFF",
+    //             },
+    //             top: {
+    //               color: "FFFFFF",
+    //             },
+    //             bottom: { color: "FFFFFF" },
+    //           },
+    //         }),
+    //         new TableCell({
+    //           children: [
+    //             new Paragraph({
+    //               children: [
+    //                 new TextRun({
+    //                   text: "…PETITIONER",
+    //                   bold: false,
+    //                   font: "Bookman Old Style",
+    //                   size: 26,
+    //                   color: "000000",
+    //                 }),
+    //               ],
+    //               heading: HeadingLevel.HEADING_1,
+    //               spacing: {
+    //                 before: 70,
+    //                 after: 70,
+    //               },
+    //             }),
+    //           ],
+    //           borders: {
+    //             left: {
+    //               color: "FFFFFF",
+    //             },
+    //             right: {
+    //               color: "FFFFFF",
+    //             },
+    //             top: {
+    //               color: "FFFFFF",
+    //             },
+    //             bottom: { color: "FFFFFF" },
+    //           },
+    //         }),
+    //       ],
+    //       height: { value: 500 },
+    //     }),
+    //     new TableRow({
+    //       children: [
+    //         new TableCell({
+    //           children: [
+    //             new Paragraph({
+    //               children: [
+    //                 new TextRun({
+    //                   text: "VERSUS",
+    //                   bold: false,
+    //                   font: "Bookman Old Style",
+    //                   size: 26,
+    //                   color: "000000",
+    //                 }),
+    //               ],
+    //               heading: HeadingLevel.HEADING_1,
+    //               alignment: AlignmentType.CENTER,
+    //               spacing: {
+    //                 before: 70,
+    //                 after: 70,
+    //               },
+    //             }),
+    //           ],
+    //           borders: {
+    //             left: {
+    //               color: "FFFFFF",
+    //             },
+    //             right: {
+    //               color: "FFFFFF",
+    //             },
+    //             top: {
+    //               color: "FFFFFF",
+    //             },
+    //             bottom: {
+    //               color: "FFFFFF",
+    //             },
+    //           },
+    //           columnSpan: 2,
+    //         }),
+    //       ],
+    //       height: { value: 500 },
+    //       cantSplit: true,
+    //     }),
+    //     new TableRow({
+    //       children: [
+    //         new TableCell({
+    //           children: [
+    //             new Paragraph({
+    //               children: [
+    //                 new TextRun({
+    //                   text: `${responsentName}`,
+    //                   bold: false,
+    //                   font: "Bookman Old Style",
+    //                   size: 26,
+    //                   color: "000000",
+    //                 }),
+    //               ],
+    //               heading: HeadingLevel.HEADING_1,
+    //               spacing: {
+    //                 before: 70,
+    //               },
+    //             }),
+    //           ],
+    //           borders: {
+    //             left: {
+    //               color: "FFFFFF",
+    //             },
+    //             right: {
+    //               color: "FFFFFF",
+    //             },
+    //             top: {
+    //               color: "FFFFFF",
+    //             },
+    //             bottom: { color: "FFFFFF" },
+    //           },
+    //         }),
+    //         new TableCell({
+    //           children: [
+    //             new Paragraph({
+    //               children: [
+    //                 new TextRun({
+    //                   text: "…RESPONDENT",
+    //                   bold: false,
+    //                   font: "Bookman Old Style",
+    //                   size: 26,
+    //                   color: "000000",
+    //                 }),
+    //               ],
+    //               heading: HeadingLevel.HEADING_1,
+    //               spacing: {
+    //                 before: 70,
+    //                 after: 70,
+    //               },
+    //             }),
+    //           ],
+    //           borders: {
+    //             left: {
+    //               color: "FFFFFF",
+    //             },
+    //             right: {
+    //               color: "FFFFFF",
+    //             },
+    //             top: {
+    //               color: "FFFFFF",
+    //             },
+    //             bottom: { color: "FFFFFF" },
+    //           },
+    //         }),
+    //       ],
+    //       height: { value: 500 },
+    //     }),
+    //   ],
+    // });
 
-    const paragraphVersus = new Paragraph({
-      children: [tableVersus],
-      heading: HeadingLevel.HEADING_1,
-      spacing: {
-        before: 70,
-      },
-    });
+    // const paragraphVersus = new Paragraph({
+    //   children: [tableVersus],
+    //   heading: HeadingLevel.HEADING_1,
+    //   spacing: {
+    //     before: 70,
+    //   },
+    // });
 
-    const indexText = new Paragraph({
-      children: [
-        new TextRun({
-          text: "INDEX",
-          bold: true,
-          font: "Bookman Old Style",
-          size: 26,
-          color: "000000",
-        }),
-      ],
-      heading: HeadingLevel.HEADING_1,
-      alignment: AlignmentType.CENTER,
-      spacing: {
-        after: 70,
-      },
-    });
+    // const indexText = new Paragraph({
+    //   children: [
+    //     new TextRun({
+    //       text: "INDEX",
+    //       bold: true,
+    //       font: "Bookman Old Style",
+    //       size: 26,
+    //       color: "000000",
+    //     }),
+    //   ],
+    //   heading: HeadingLevel.HEADING_1,
+    //   alignment: AlignmentType.CENTER,
+    //   spacing: {
+    //     after: 70,
+    //   },
+    // });
 
     // const indexTableHeading = new TableRow({
     //   children: [
@@ -765,10 +765,10 @@ export default async function handler(req, res) {
             new Paragraph({
               children: [
                 paragraphCourtName,
-                paragraphJuridiction,
-                paragraphPetitionNumber,
-                paragraphVersus,
-                indexText,
+                // paragraphJuridiction,
+                // paragraphPetitionNumber,
+                // paragraphVersus,
+                // indexText,
                 // indexTable,
               ],
             }),
@@ -781,11 +781,12 @@ export default async function handler(req, res) {
     const documentPath = `${dir}/${fileName}`;
 
     await Packer.toBuffer(doc).then(async (buffer) => {
-      await fs.writeFileSync(documentPath, buffer, (err) => {
-        console.error(err);
-      });
-
-      res.status(200).json({ url: `files/${fileName}` });
+      try {
+        await fs.writeFileSync(documentPath, buffer);
+        res.status(200).json({ url: `files/${fileName}` });
+      } catch (err) {
+        console.log(err);
+      }
     });
   } else {
     res.status(400).json({ message: "Invaild Method" });
