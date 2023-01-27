@@ -778,7 +778,7 @@ export default async function handler(req, res) {
     const documentPath = `${dir}/${fileName}`;
 
     Packer.toBuffer(doc).then(async (buffer) => {
-      await fs.writeFileSync(documentPath, buffer);
+      await fs.writeFile(documentPath, buffer);
 
       await res.status(200).json({ url: `files/${fileName}` });
     });
