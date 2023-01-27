@@ -781,16 +781,7 @@ export default async function handler(req, res) {
     Packer.toBuffer(doc).then(async (buffer) => {
       await fs.writeFileSync(documentPath, buffer);
 
-      try {
-        const data = fs.readFileSync(documentPath, "utf8");
-        console.log(data);
-
-        if (data) {
-          await res.status(200).json({ url: `files/${fileName}` });
-        }
-      } catch (err) {
-        console.error(err);
-      }
+      await res.status(200).json({ url: `files/${fileName}` });
     });
   } else {
     res.status(400).json({ message: "Invaild Method" });
