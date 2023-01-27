@@ -777,7 +777,7 @@ export default async function handler(req, res) {
       ],
     });
 
-    const fileName = `alwin.docx`;
+    const fileName = req.body.petitionerName;
     const documentPath = `${dir}/${fileName}`;
 
     await Packer.toBuffer(doc).then(async (buffer) => {
