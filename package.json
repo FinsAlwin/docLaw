@@ -6,9 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "npm run download-webviewer",
-    "download-webviewer": "npx @pdftron/webviewer-downloader --webviewerLocation ./public/webviewer/lib"
+    "lint": "next lint"
+   
   },
   "dependencies": {
     "@next/font": "13.1.4",
@@ -37,3 +36,5 @@
     "swr": "^2.0.2"
   }
 }
+
+
