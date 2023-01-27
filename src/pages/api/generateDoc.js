@@ -25,7 +25,19 @@ import getConfig from "next/config";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const dir = path.join("./public/files");
+    // const dir = path.join("/public/files");
+
+    const { serverRuntimeConfig } = getConfig();
+
+    const dirRelativeToPublicFolder = "files";
+
+    // const dir = path.join(process.cwd(), "public/files");
+
+    const dir = path.join(
+      serverRuntimeConfig.PROJECT_ROOT,
+      "./public",
+      dirRelativeToPublicFolder
+    );
 
     const courtName = req.body.courtName.toUpperCase();
     const juridiction = req.body.juridiction.toUpperCase();
@@ -777,16 +789,21 @@ export default async function handler(req, res) {
       ],
     });
 
-    const fileName = req.body.petitionerName;
+    const fileName = "alwin.docx";
     const documentPath = `${dir}/${fileName}`;
 
     await Packer.toBuffer(doc).then(async (buffer) => {
-      try {
-        await fs.writeFileSync(documentPath, buffer);
-        res.status(200).json({ url: `files/${fileName}` });
-      } catch (err) {
-        console.log(err);
-      }
+      await fs.writeFileSync(documentPath, buffer);
+
+      const filenames = fs.readdirSync(dir);
+
+      console.log(filenames);
+
+      // const images = filenames.map((name) =>
+      //   path.join("/", dirRelativeToPublicFolder, name)
+      // );
+
+      res.status(200).json({ url: `files/${fileName}` });
     });
   } else {
     res.status(400).json({ message: "Invaild Method" });
