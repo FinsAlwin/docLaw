@@ -778,13 +778,11 @@ export default async function handler(req, res) {
     const fileName = `alwin.docx`;
     const documentPath = `${dir}/${fileName}`;
 
-    await Packer.toBuffer(doc).then(async (buffer) => {
-      await fs.writeFileSync(documentPath, buffer, (err) => {
-        console.error(err);
-      });
-    });
+    Packer.toBuffer(doc).then(async (buffer) => {
+      await fs.writeFileSync(documentPath, buffer);
 
-    res.status(200).json({ url: `files/${fileName}` });
+      await res.status(200).json({ url: `files/${fileName}` });
+    });
   } else {
     res.status(400).json({ message: "Invaild Method" });
   }
