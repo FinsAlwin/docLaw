@@ -779,9 +779,11 @@ export default async function handler(req, res) {
     const documentPath = `${dir}/${fileName}`;
 
     Packer.toBuffer(doc).then(async (buffer) => {
-      const res = await fs.writeFileSync(documentPath, buffer);
+      await fs.writeFileSync(documentPath, buffer);
 
-      if (res) await res.status(200).json({ url: `files/${fileName}` });
+      setTimeout(async () => {
+        await res.status(200).json({ url: `files/${fileName}` });
+      }, 3000);
     });
   } else {
     res.status(400).json({ message: "Invaild Method" });
