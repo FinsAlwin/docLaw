@@ -23,7 +23,7 @@ import {
 import path from "path";
 import getConfig from "next/config";
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method === "POST") {
     const dir = path.join("./public/files");
 
@@ -33,6 +33,10 @@ export default function handler(req, res) {
 
     const petitionerName = req.body.petitionerName.toUpperCase();
     const responsentName = req.body.responsentName.toUpperCase();
+
+    const isUregent = req.body.isUregent;
+
+    const annexuresNo = req.body.annexuresNo;
 
     const paragraphCourtName = new Paragraph({
       children: [
@@ -298,78 +302,447 @@ export default function handler(req, res) {
       },
     });
 
-    const tableIndex = new Table({
-      columnWidths: [1000, 6000],
-      rows: [
-        new TableRow({
+    const indexTableHeading = new TableRow({
+      children: [
+        new TableCell({
           children: [
-            new TableCell({
+            new Paragraph({
               children: [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: "S. No.",
-                      bold: true,
-                      font: "Bookman Old Style",
-                      size: 26,
-                      color: "000000",
-                    }),
-                  ],
-                  heading: HeadingLevel.HEADING_1,
-                  alignment: AlignmentType.CENTER,
-                  spacing: {
-                    before: 70,
-                    after: 70,
-                  },
+                new TextRun({
+                  text: "S. No.",
+                  bold: true,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
                 }),
               ],
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: "Particular",
-                      bold: true,
-                      font: "Bookman Old Style",
-                      size: 26,
-                      color: "000000",
-                    }),
-                  ],
-                  heading: HeadingLevel.HEADING_1,
-                  alignment: AlignmentType.CENTER,
-                  spacing: {
-                    before: 70,
-                    after: 70,
-                  },
-                }),
-              ],
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: "Page no.",
-                      bold: true,
-                      font: "Bookman Old Style",
-                      size: 26,
-                      color: "000000",
-                    }),
-                  ],
-                  heading: HeadingLevel.HEADING_1,
-                  alignment: AlignmentType.CENTER,
-                  spacing: {
-                    before: 70,
-                    after: 70,
-                  },
-                }),
-              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
             }),
           ],
-          height: { value: 500 },
+        }),
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "Particular",
+                  bold: true,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "Page no.",
+                  bold: true,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
         }),
       ],
+      height: { value: 500 },
+    });
+
+    const urgetTableRow = new TableRow({
+      children: [
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: " ",
+                  bold: true,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                  bullet: {
+                    level: 0,
+                  },
+                }),
+              ],
+
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "Urgent Application",
+                  bold: false,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "",
+                  bold: true,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+      ],
+      height: { value: 500 },
+    });
+
+    const rowNoticeofMotion = new TableRow({
+      children: [
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: " ",
+                  bold: true,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "Notice of Motion",
+                  bold: false,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "",
+                  bold: true,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+      ],
+      height: { value: 500 },
+    });
+
+    const rowMemoofParties = new TableRow({
+      children: [
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: " ",
+                  bold: true,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "Memo of Parties",
+                  bold: false,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "",
+                  bold: true,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+      ],
+      height: { value: 500 },
+    });
+
+    const rowSynopsisLisDates = new TableRow({
+      children: [
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: " ",
+                  bold: true,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "Synopsis & List of Dates",
+                  bold: false,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "",
+                  bold: true,
+                  font: "Bookman Old Style",
+                  size: 26,
+                  color: "000000",
+                }),
+              ],
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: {
+                before: 70,
+                after: 70,
+              },
+            }),
+          ],
+        }),
+      ],
+      height: { value: 500 },
+    });
+
+    let annexuresNoList = [];
+
+    const listAnnexures = (annexuresNo) => {
+      for (let step = 0; step <= annexuresNo; step++) {
+        annexuresNoList.push(
+          new TableRow({
+            children: [
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: " ",
+                        bold: true,
+                        font: "Bookman Old Style",
+                        size: 26,
+                        color: "000000",
+                      }),
+                    ],
+                    heading: HeadingLevel.HEADING_1,
+                    alignment: AlignmentType.CENTER,
+                    spacing: {
+                      before: 70,
+                      after: 70,
+                    },
+                  }),
+                ],
+              }),
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: `ANNEXURE P-${step}:`,
+                        bold: false,
+                        font: "Bookman Old Style",
+                        size: 26,
+                        color: "000000",
+                      }),
+                    ],
+                    heading: HeadingLevel.HEADING_1,
+                    alignment: AlignmentType.CENTER,
+                    spacing: {
+                      before: 70,
+                      after: 70,
+                    },
+                  }),
+                ],
+              }),
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: "",
+                        bold: true,
+                        font: "Bookman Old Style",
+                        size: 26,
+                        color: "000000",
+                      }),
+                    ],
+                    heading: HeadingLevel.HEADING_1,
+                    alignment: AlignmentType.CENTER,
+                    spacing: {
+                      before: 70,
+                      after: 70,
+                    },
+                  }),
+                ],
+              }),
+            ],
+            height: { value: 500 },
+          })
+        );
+      }
+    };
+
+    listAnnexures(annexuresNo);
+
+    const indexList = [
+      indexTableHeading,
+      isUregent && urgetTableRow,
+      rowNoticeofMotion,
+      rowMemoofParties,
+      rowSynopsisLisDates,
+    ];
+
+    const children = indexList.filter(Boolean).concat(annexuresNoList);
+
+    const tableIndex = new Table({
+      columnWidths: [1000, 6000],
+      rows: children,
     });
 
     const indexTable = new Paragraph({
@@ -405,8 +778,8 @@ export default function handler(req, res) {
     const fileName = `alwin.docx`;
     const documentPath = `${dir}/${fileName}`;
 
-    Packer.toBuffer(doc).then(async (buffer) => {
-      fs.writeFileSync(documentPath, buffer, (err) => {
+    await Packer.toBuffer(doc).then(async (buffer) => {
+      await fs.writeFileSync(documentPath, buffer, (err) => {
         if (err) {
           reject(err);
           return;

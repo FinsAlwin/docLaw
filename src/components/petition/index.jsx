@@ -36,8 +36,8 @@ export default function Petition() {
   const [petitiontype, setPetitiontype] = useState("");
 
   const [petitionerName, setPetitionerName] = useState("");
-  const [petitionerAdressLine1, setPetitionerAdressLine1] = useState("");
-  const [petitionerAdressLine2, setPetitionerAdressLine2] = useState("");
+  const [petitionerAdress1, setPetitionerAdressLine1] = useState("");
+  const [petitionerAdress2, setPetitionerAdressLine2] = useState("");
 
   const [respondentName, setRespondentName] = useState("");
   const [respondentAdress1, setRespondentAdress1] = useState("");
@@ -57,17 +57,33 @@ export default function Petition() {
 
   const [isUregent, setIsUregent] = useState(false);
 
+  const [annexuresNo, setAnnexures] = useState();
+
   const [petitionTitle, setPetitionTitle] = useState("");
 
   const handleDocProcessing = async () => {
-    // await genDocx();
-
     const payload = {
       courtName: highCourt,
       juridiction: juridiction,
       petitionNumber: petitionNumber,
       petitionerName: petitionerName,
       responsentName: respondentName,
+      petitiontype: petitiontype,
+      petitionerAdress1: petitionerAdress1,
+      petitionerAdress2: petitionerAdress2,
+      respondentAdress1: respondentAdress1,
+      respondentAdress2: respondentAdress2,
+      advocateFilledBy: advocateFilledBy,
+      advocateAddress1: advocateAddress1,
+      advocateAddress2: advocateAddress2,
+      place: place,
+      date: date,
+      petFillingtype: petFillingtype,
+      dateOfListing: dateOfListing,
+      isUregent: isUregent,
+      petitionTitle: petitionTitle,
+      isUregent: isUregent,
+      annexuresNo: annexuresNo,
     };
     const res = await fetch(`/api/generateDoc`, {
       method: "POST",
@@ -80,82 +96,8 @@ export default function Petition() {
     const dataRes = await res.json();
 
     if (res.status == 200) {
-      saveAs(dataRes.url);
+      await saveAs(dataRes.url);
     }
-  };
-
-  const genDocx = async () => {
-    loadFile(
-      `${base_url}template/template1.docx`,
-      async function (error, content) {
-        if (error) {
-          throw error;
-        }
-        var zip = new PizZip(content);
-        var doc = new Docxtemplater().loadZip(zip);
-        doc.setData({
-          HIGHCOURT: highCourt.toUpperCase(),
-          JURIDICTION: juridiction.toUpperCase(),
-          PETITIONTYPE: petitiontype.toUpperCase(),
-          PETITIONNUMBER: petitionNumber.toUpperCase(),
-          PETITIONERNAME: petitionerName.toUpperCase(),
-          RESPONDENTNAME: respondentName.toUpperCase(),
-          PETTITLE: petitionTitle.toUpperCase(),
-          PETPLACE: place.toUpperCase(),
-          PETDATE: date,
-          DATEOFLISTING: dateOfListing,
-          PETITIONERADDRESS1: petitionerAdressLine1.toUpperCase(),
-          PETITIONERADDRESS2: petitionerAdressLine2.toUpperCase(),
-          RESPONDENTADDRESS1: respondentAdress1.toUpperCase(),
-          RESPONDENTADDRESS2: respondentAdress2.toUpperCase(),
-          ADOVOCATEFILLEDBY: advocateFilledBy.toUpperCase(),
-          ADVOCATEADDRESS1: advocateAddress1.toUpperCase(),
-          ADVOCATEADDRESS2: advocateAddress2.toUpperCase(),
-          PETFILLINGTYPE: petFillingtype.toUpperCase(),
-        });
-        try {
-          // render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)
-          doc.render();
-        } catch (error) {
-          // The error thrown here contains additional information when logged with JSON.stringify (it contains a properties object containing all suberrors).
-          function replaceErrors(key, value) {
-            if (value instanceof Error) {
-              return Object.getOwnPropertyNames(value).reduce(function (
-                error,
-                key
-              ) {
-                error[key] = value[key];
-                return error;
-              },
-              {});
-            }
-            return value;
-          }
-          console.log(JSON.stringify({ error: error }, replaceErrors));
-
-          if (error.properties && error.properties.errors instanceof Array) {
-            const errorMessages = error.properties.errors
-              .map(function (error) {
-                return error.properties.explanation;
-              })
-              .join("\n");
-            console.log("errorMessages", errorMessages);
-            // errorMessages is a humanly readable message looking like this :
-            // 'The tag beginning with "foobar" is unopened'
-          }
-          throw error;
-        }
-
-        var out = doc.getZip().generate({
-          type: "blob",
-          mimeType:
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        });
-
-        // Output the document using Data-URI
-        saveAs(out, `${petitionNumber}.docx`);
-      }
-    );
   };
 
   const handleMainheader = () => {
@@ -368,12 +310,24 @@ export default function Petition() {
                 <label className="p-2">Urgent Application?</label>
                 <div className="d-flex">
                   <div className="form-check">
-                    <input className="form-check-input" type="radio" />
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      value={isUregent}
+                      checked={isUregent}
+                      onChange={() => setIsUregent(true)}
+                    />
                     <label className="form-check-label">Yes</label>
                   </div>
                   &nbsp;&nbsp;
                   <div className="form-check">
-                    <input className="form-check-input" type="radio" />
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      value={!isUregent}
+                      checked={!isUregent}
+                      onChange={() => setIsUregent(false)}
+                    />
                     <label className="form-check-label">No</label>
                   </div>
                 </div>
@@ -381,12 +335,15 @@ export default function Petition() {
 
               <div className="form-group p-2">
                 <label className="p-2">No. of Annexures</label>
-                <select className="form-control w-25">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+                <select
+                  className="form-control w-25"
+                  onChange={(e) => setAnnexures(e.target.value)}
+                >
+                  <option value={1}>1</option>
+                  <option value={2}>2</option>
+                  <option value={3}>3</option>
+                  <option value={4}>4</option>
+                  <option value={5}>5</option>
                 </select>
               </div>
 
