@@ -80,7 +80,7 @@ export default function Petition() {
     const dataRes = await res.json();
 
     if (res.status == 200) {
-      window.open(dataRes.url);
+      saveAs(dataRes.url);
     }
   };
 
