@@ -785,7 +785,7 @@ export default async function handler(req, res) {
         console.error(err);
       });
 
-      res.status(200).json({ url: `files/${documentPath}` });
+      res.status(200).json({ url: `files/${fileName}` });
     });
   } else {
     res.status(400).json({ message: "Invaild Method" });
