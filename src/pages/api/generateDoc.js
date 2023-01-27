@@ -654,7 +654,7 @@ export default async function handler(req, res) {
     let annexuresNoList = [];
 
     const listAnnexures = (annexuresNo) => {
-      for (let step = 0; step <= annexuresNo; step++) {
+      for (let step = 1; step <= annexuresNo; step++) {
         annexuresNoList.push(
           new TableRow({
             children: [
@@ -685,7 +685,7 @@ export default async function handler(req, res) {
                     children: [
                       new TextRun({
                         text: `ANNEXURE P-${step}:`,
-                        bold: false,
+                        bold: true,
                         font: "Bookman Old Style",
                         size: 26,
                         color: "000000",
@@ -738,7 +738,7 @@ export default async function handler(req, res) {
       rowSynopsisLisDates,
     ];
 
-    const children = indexList.filter(Boolean).concat(annexuresNoList);
+    const children = await indexList.filter(Boolean).concat(annexuresNoList);
 
     const tableIndex = new Table({
       columnWidths: [1000, 6000],
