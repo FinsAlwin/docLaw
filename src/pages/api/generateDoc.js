@@ -780,11 +780,7 @@ export default async function handler(req, res) {
 
     await Packer.toBuffer(doc).then(async (buffer) => {
       await fs.writeFileSync(documentPath, buffer, (err) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve();
+        console.error(err);
       });
     });
 
