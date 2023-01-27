@@ -738,11 +738,13 @@ export default async function handler(req, res) {
       rowSynopsisLisDates,
     ];
 
-    const children = await indexList.filter(Boolean).concat(annexuresNoList);
+    const childrenIndex = await indexList
+      .filter(Boolean)
+      .concat(annexuresNoList);
 
     const tableIndex = new Table({
       columnWidths: [1000, 6000],
-      rows: children,
+      rows: childrenIndex,
     });
 
     const indexTable = new Paragraph({
@@ -767,6 +769,7 @@ export default async function handler(req, res) {
                 paragraphPetitionNumber,
                 paragraphVersus,
                 indexText,
+                // indexTable,
               ],
             }),
           ],
@@ -777,10 +780,12 @@ export default async function handler(req, res) {
     const fileName = `alwin.docx`;
     const documentPath = `${dir}/${fileName}`;
 
-    Packer.toBuffer(doc).then(async (buffer) => {
-      await fs.writeFile(documentPath, buffer);
+    await Packer.toBuffer(doc).then(async (buffer) => {
+      await fs.writeFileSync(documentPath, buffer, (err) => {
+        console.error(err);
+      });
 
-      await res.status(200).json({ url: `files/${fileName}` });
+      res.status(200).json({ url: `files/${documentPath}` });
     });
   } else {
     res.status(400).json({ message: "Invaild Method" });
