@@ -798,7 +798,7 @@ export default async function handler(req, res) {
 
         const filenames = fs.readdirSync(dir);
 
-        res.status(200).json({ url: `files/${fileName}` });
+        res.status(200).json({ files: filenames });
       });
     } else {
       res.status(401).json({ message: "missing parameter" });
