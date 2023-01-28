@@ -25,6 +25,8 @@ import getConfig from "next/config";
 
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { Blob } from "buffer";
+import { saveAs } from "file-saver";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBwlHKQd8tEAmFhBt-ZDe0d4pNWl7HzzNU",
@@ -804,33 +806,30 @@ export default async function handler(req, res) {
             ],
           },
         ],
+        compatibility: {
+          version: 17,
+        },
       });
 
       const fileName = `${petitionNumber}.docx`;
-      const documentPath = `${dir}/${fileName}`;
+
+      const mimeType =
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
       await Packer.toBuffer(doc).then(async (buffer) => {
-        // const blob = new Blob([buffer]);
-
-        // uploadBytes(storageRef, blob).then((snapshot) => {
-        //   console.log('Uploaded a blob or file!');
-        //   console.log(snapshot)
-        // });
-
         const storageRef = ref(storage, `docx/${fileName}`);
 
-        uploadBytes(storageRef, buffer).then((snapshot) => {
-          console.log("Uploaded an array!");
+        const blob = new Blob([buffer]);
 
+        const docblob = blob.slice(0, blob.size, mimeType);
+
+        var bufferA = await docblob.arrayBuffer();
+
+        uploadBytes(storageRef, bufferA).then((snapshot) => {
           getDownloadURL(ref(storage, `docx/${fileName}`)).then((url) => {
-            console.log(url);
             res.status(200).json({ url: url });
           });
         });
-
-        // await fs.writeFileSync(documentPath, buffer);
-
-        // const filenames = fs.readdirSync(dir);
       });
     } else {
       res.status(401).json({ message: "missing parameter" });
