@@ -96,7 +96,9 @@ export default function Petition() {
     const dataRes = await res.json();
 
     if (res.status == 200) {
-      await saveAs(dataRes.url);
+      // await saveAs(dataRes.url);
+
+      console.log("petition genrated");
     }
   };
 
