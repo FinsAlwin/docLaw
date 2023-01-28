@@ -93,10 +93,10 @@ export default function Petition() {
       body: JSON.stringify(payload),
     });
 
-    //const dataRes = await res.json();
+    const dataRes = await res.json();
 
     if (res.status == 200) {
-      // await saveAs(dataRes.url);
+      await saveAs(dataRes.url);
 
       console.log("petition genrated");
     }

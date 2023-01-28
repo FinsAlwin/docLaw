@@ -23,6 +23,22 @@ import {
 import path from "path";
 import getConfig from "next/config";
 
+import { initializeApp } from "firebase/app";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBwlHKQd8tEAmFhBt-ZDe0d4pNWl7HzzNU",
+  authDomain: "docslaw-9e938.firebaseapp.com",
+  projectId: "docslaw-9e938",
+  storageBucket: "docslaw-9e938.appspot.com",
+  messagingSenderId: "816546388021",
+  appId: "1:816546388021:web:527704a5e53bdc5bd3797c",
+};
+
+const app = initializeApp(firebaseConfig);
+
+const storage = getStorage(app);
+
 export default async function handler(req, res) {
   if (req.method === "POST") {
     // const dir = path.join("/public/files");
@@ -794,11 +810,27 @@ export default async function handler(req, res) {
       const documentPath = `${dir}/${fileName}`;
 
       await Packer.toBuffer(doc).then(async (buffer) => {
-        await fs.writeFileSync(documentPath, buffer);
+        // const blob = new Blob([buffer]);
 
-        const filenames = fs.readdirSync(dir);
+        // uploadBytes(storageRef, blob).then((snapshot) => {
+        //   console.log('Uploaded a blob or file!');
+        //   console.log(snapshot)
+        // });
 
-        res.status(200).json({ files: filenames });
+        const storageRef = ref(storage, `docx/${fileName}`);
+
+        uploadBytes(storageRef, buffer).then((snapshot) => {
+          console.log("Uploaded an array!");
+
+          getDownloadURL(ref(storage, `docx/${fileName}`)).then((url) => {
+            console.log(url);
+            res.status(200).json({ url: url });
+          });
+        });
+
+        // await fs.writeFileSync(documentPath, buffer);
+
+        // const filenames = fs.readdirSync(dir);
       });
     } else {
       res.status(401).json({ message: "missing parameter" });
