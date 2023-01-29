@@ -802,7 +802,7 @@ export default async function handler(req, res) {
         ],
       });
 
-      const fileName = `alwin`;
+      const fileName = `alwin.docx`;
 
       await Packer.toBuffer(doc).then(async (buffer) => {
         const storageRef = ref(storage, `docx/${fileName}`);
