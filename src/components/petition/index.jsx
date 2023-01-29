@@ -61,6 +61,8 @@ export default function Petition() {
 
   const [petitionTitle, setPetitionTitle] = useState("");
 
+  const [url, setUrl] = useState("");
+
   const handleDocProcessing = async () => {
     const payload = {
       courtName: highCourt,
@@ -98,7 +100,9 @@ export default function Petition() {
     if (res.status == 200) {
       await saveAs(dataRes.url);
 
-      console.log("petition genrated");
+      setUrl(dataRes.url);
+
+
     }
   };
 
@@ -359,7 +363,7 @@ export default function Petition() {
             </div>
 
             <div className="col-lg-6">
-              {/* <PetitionPreview url={"http://localhost:3000/files/alwin.docx"} /> */}
+              {url && <PetitionPreview url={url} />}
             </div>
           </div>
         )}
