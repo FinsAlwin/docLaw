@@ -124,7 +124,7 @@ export default async function handler(req, res) {
       });
 
       const tableVersus = new Table({
-        columnWidths: [6000, 3000],
+        columnWidths: [6000, 4000],
         rows: [
           new TableRow({
             children: [
@@ -235,7 +235,6 @@ export default async function handler(req, res) {
               }),
             ],
             height: { value: 500 },
-            cantSplit: true,
           }),
           new TableRow({
             children: [
@@ -306,14 +305,7 @@ export default async function handler(req, res) {
             height: { value: 500 },
           }),
         ],
-      });
-
-      const paragraphVersus = new Paragraph({
-        children: [tableVersus],
-        heading: HeadingLevel.HEADING_1,
-        spacing: {
-          before: 70,
-        },
+        alignment: AlignmentType.CENTER,
       });
 
       const indexText = new Paragraph({
@@ -695,7 +687,7 @@ export default async function handler(req, res) {
                       children: [
                         new TextRun({
                           text: " ",
-                          bold: true,
+                          bold: false,
                           font: "Bookman Old Style",
                           size: 26,
                           color: "000000",
@@ -716,7 +708,7 @@ export default async function handler(req, res) {
                       children: [
                         new TextRun({
                           text: `ANNEXURE P-${step}:`,
-                          bold: true,
+                          bold: false,
                           font: "Bookman Old Style",
                           size: 26,
                           color: "000000",
@@ -737,7 +729,7 @@ export default async function handler(req, res) {
                       children: [
                         new TextRun({
                           text: "",
-                          bold: true,
+                          bold: false,
                           font: "Bookman Old Style",
                           size: 26,
                           color: "000000",
@@ -776,56 +768,46 @@ export default async function handler(req, res) {
       const tableIndex = new Table({
         columnWidths: [1000, 6000],
         rows: childrenIndex,
-      });
-
-      const indexTable = new Paragraph({
-        children: [tableIndex],
-        heading: HeadingLevel.HEADING_1,
-        spacing: {
-          before: 70,
-        },
+        alignment: AlignmentType.CENTER,
       });
 
       const doc = new Document({
+        frame: {
+          position: {
+            x: 1000,
+            y: 3000,
+          },
+          width: 4000,
+          height: 1000,
+          anchor: {
+            horizontal: FrameAnchorType.MARGIN,
+            vertical: FrameAnchorType.MARGIN,
+          },
+          alignment: {
+            x: HorizontalPositionAlign.CENTER,
+            y: VerticalPositionAlign.TOP,
+          },
+        },
         sections: [
           {
-            properties: {
-              type: SectionType.CONTINUOUS,
-            },
             children: [
-              new Paragraph({
-                children: [
-                  paragraphCourtName,
-                  paragraphJuridiction,
-                  paragraphPetitionNumber,
-                  paragraphVersus,
-                  indexText,
-                  indexTable,
-                ],
-              }),
+              paragraphCourtName,
+              paragraphJuridiction,
+              paragraphPetitionNumber,
+              tableVersus,
+              indexText,
+              tableIndex,
             ],
           },
         ],
-        compatibility: {
-          version: 17,
-        },
       });
 
-      const fileName = `${petitionNumber}.docx`;
-
-      const mimeType =
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+      const fileName = `alwin.docx`;
 
       await Packer.toBuffer(doc).then(async (buffer) => {
         const storageRef = ref(storage, `docx/${fileName}`);
 
-        const blob = new Blob([buffer]);
-
-        const docblob = blob.slice(0, blob.size, mimeType);
-
-        var bufferA = await docblob.arrayBuffer();
-
-        uploadBytes(storageRef, bufferA).then((snapshot) => {
+        uploadBytes(storageRef, buffer).then((snapshot) => {
           getDownloadURL(ref(storage, `docx/${fileName}`)).then((url) => {
             res.status(200).json({ url: url });
           });
