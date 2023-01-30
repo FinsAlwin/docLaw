@@ -25,11 +25,11 @@ export default async function handler(req, res) {
 
     // const dirRelativeToPublicFolder = "files";
 
-    const dir1 = path.join(
-      serverRuntimeConfig.PROJECT_ROOT,
-      "./public",
-      dirRelativeToPublicFolder
-    );
+    // const dir1 = path.join(
+    //   serverRuntimeConfig.PROJECT_ROOT,
+    //   "./public",
+    //   dirRelativeToPublicFolder
+    // );
 
     // const dir = path.join("./public/files");
     // const dirTemp = path.join("./public/template");
