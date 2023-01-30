@@ -21,9 +21,9 @@ const storage = getStorage(app);
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const { serverRuntimeConfig } = getConfig();
+    // const { serverRuntimeConfig } = getConfig();
 
-    const dirRelativeToPublicFolder = "files";
+    // const dirRelativeToPublicFolder = "files";
 
     const dir1 = path.join(
       serverRuntimeConfig.PROJECT_ROOT,
@@ -31,13 +31,13 @@ export default async function handler(req, res) {
       dirRelativeToPublicFolder
     );
 
-    const dir = path.join("./public/files");
-    const dirTemp = path.join("./public/template");
-    const template = fs.readFileSync(`${dirTemp}/template1.docx`);
+    // const dir = path.join("./public/files");
+    // const dirTemp = path.join("./public/template");
+    // const template = fs.readFileSync(`${dirTemp}/template1.docx`);
 
     const fileName = `alwin.docx`;
 
-    const documentPath = `${dir}/${fileName}`;
+    // const documentPath = `${dir}/${fileName}`;
 
     let annexuresNoList = [];
 
