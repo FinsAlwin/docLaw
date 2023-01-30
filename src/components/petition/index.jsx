@@ -61,6 +61,8 @@ export default function Petition() {
 
   const [petitionTitle, setPetitionTitle] = useState("");
 
+  const [htmldocPreview, setHtmldocPreview] = useState("");
+
   const handleDocProcessing = async () => {
     const payload = {
       courtName: highCourt,
@@ -85,7 +87,7 @@ export default function Petition() {
       isUregent: isUregent,
       annexuresNo: annexuresNo,
     };
-    const res = await fetch(`/api/generateDoc`, {
+    const res = await fetch(`/api/htmlDocxTest`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -97,6 +99,7 @@ export default function Petition() {
 
     if (res.status == 200) {
       await saveAs(dataRes.url);
+      setHtmldocPreview(dataRes.content);
     }
   };
 
@@ -357,7 +360,9 @@ export default function Petition() {
             </div>
 
             <div className="col-lg-6">
-              {/* <PetitionPreview url={"http://localhost:3000/files/alwin.docx"} /> */}
+              {htmldocPreview.length && (
+                <PetitionPreview htmlContent={htmldocPreview} />
+              )}
             </div>
           </div>
         )}
