@@ -63,7 +63,8 @@ export default function Petition() {
 
   const [htmldocPreview, setHtmldocPreview] = useState("");
 
-  const handleDocProcessing = async () => {
+  const handleDocProcessing = async (e) => {
+    e.preventDefault();
     const payload = {
       courtName: highCourt,
       juridiction: juridiction,
@@ -113,18 +114,30 @@ export default function Petition() {
     setIsDetailsActive1(false);
     setIsDetailsActive2(true);
   };
+
+  const handleDetailesback1 = () => {
+    setIsHeadingActive(true);
+    setIsDetailsActive1(false);
+    setIsDetailsActive2(false);
+  };
+
+  const handleDetailesback2 = () => {
+    setIsHeadingActive(false);
+    setIsDetailsActive1(true);
+    setIsDetailsActive2(false);
+  };
   return (
     <>
-      <div className={`p-5 ${styles.formContainer}`}>
-        {isHeadingActive && (
+      <form onSubmit={handleDocProcessing} className="container">
+        <div className={`p-5 ${styles.formContainer}`}>
           <div className="row">
             <div className="col-lg-6">
               <CustomInput
                 label="Select High Court*"
                 type="text"
                 isRequired={true}
-                minLength="3"
-                maxLength="50"
+                minLength={3}
+                maxLength={25}
                 placeholder="Name of High Court"
                 onValueChange={(e) => setHighCourt(e)}
               />
@@ -132,8 +145,8 @@ export default function Petition() {
                 label="Select Jurisdiction*"
                 type="text"
                 isRequired={true}
-                minLength="3"
-                maxLength="50"
+                minLength={3}
+                maxLength={25}
                 placeholder="Jurisdiction"
                 onValueChange={(e) => setJuridiction(e)}
               />
@@ -141,24 +154,22 @@ export default function Petition() {
                 label="Select Type of Petition*"
                 type="text"
                 isRequired={true}
-                minLength="3"
-                maxLength="20"
+                minLength={3}
+                maxLength={25}
                 placeholder="Type of Petition"
                 onValueChange={(e) => setPetitiontype(e)}
               />
 
-              <button
-                type="button"
+              {/* <button
+                type="submit"
                 className="btn btn-primary ml-3"
                 onClick={handleMainheader}
               >
                 Next <span>{">>"}</span>
-              </button>
+              </button> */}
             </div>
           </div>
-        )}
 
-        {isDetailsActive1 && (
           <div className="row">
             <div className="col-lg-6">
               <h4 className="p-2">DETAILS OF THE PETITIONER</h4>
@@ -166,8 +177,8 @@ export default function Petition() {
                 label="Name of the Petitioner*"
                 type="text"
                 isRequired={true}
-                minLength="3"
-                maxLength="20"
+                minLength={3}
+                maxLength={25}
                 placeholder="Name of Petitioner"
                 onValueChange={(e) => setPetitionerName(e)}
               />
@@ -175,16 +186,16 @@ export default function Petition() {
               <CustomInput
                 label="Address of the Petitioner*"
                 isRequired={true}
-                minLength="3"
-                maxLength="50"
+                minLength={3}
+                maxLength={25}
                 placeholder="Address Line 1"
                 onValueChange={(e) => setPetitionerAdressLine1(e)}
               />
 
               <CustomInput
                 isRequired={true}
-                minLength="3"
-                maxLength="50"
+                minLength={3}
+                maxLength={25}
                 placeholder="Address Line 2"
                 onValueChange={(e) => setPetitionerAdressLine2(e)}
               />
@@ -195,8 +206,8 @@ export default function Petition() {
                 label="Name of the Respondent*"
                 type="text"
                 isRequired={true}
-                minLength="3"
-                maxLength="20"
+                minLength={3}
+                maxLength={25}
                 placeholder="Name of Petitioner"
                 onValueChange={(e) => setRespondentName(e)}
               />
@@ -204,16 +215,16 @@ export default function Petition() {
               <CustomInput
                 label="Address of the Respondent*"
                 isRequired={true}
-                minLength="3"
-                maxLength="50"
+                minLength={3}
+                maxLength={25}
                 placeholder="Address Line 1"
                 onValueChange={(e) => setRespondentAdress1(e)}
               />
 
               <CustomInput
                 isRequired={true}
-                minLength="3"
-                maxLength="50"
+                minLength={3}
+                maxLength={25}
                 placeholder="Address Line 2"
                 onValueChange={(e) => setRespondentAdress2(e)}
               />
@@ -221,54 +232,56 @@ export default function Petition() {
 
             <div className="col-lg-6">
               <h4 className="p-2">DETAILS OF THE PETITIONER’s ADVOCATE</h4>
-
               <CustomInput
                 label="Filed By*"
                 type="text"
                 isRequired={true}
-                minLength="3"
-                maxLength="20"
+                minLength={3}
+                maxLength={25}
                 placeholder="Petitioner’s Advocate Name"
                 onValueChange={(e) => setAdvocateFilledBy(e)}
               />
-
               <CustomInput
                 label="Address of the Advocate*"
                 isRequired={true}
-                minLength="3"
-                maxLength="50"
+                minLength={3}
+                maxLength={25}
                 placeholder="Address Line 1"
                 onValueChange={(e) => setAdvocateAddress1(e)}
               />
-
               <CustomInput
                 isRequired={true}
-                minLength="3"
-                maxLength="50"
+                minLength={3}
+                maxLength={25}
                 placeholder="Address Line 2"
                 onValueChange={(e) => setAdvocateAddress2(e)}
               />
-
-              <button
+              {/* <button
                 type="button"
+                className="btn btn-warning ml-3"
+                onClick={handleDetailesback1}
+              >
+                Back <span>{"<<"}</span>
+              </button>
+              &nbsp;
+              <button
+                type="submit"
                 className="btn btn-primary ml-3"
                 onClick={handleDetailes1}
               >
                 Next <span>{">>"}</span>
-              </button>
+              </button> */}
             </div>
           </div>
-        )}
 
-        {isDetailsActive2 && (
           <div className="row">
             <div className="col-lg-6">
               <CustomInput
                 label="Petition Number"
                 type="text"
                 isRequired={true}
-                minLength="3"
-                maxLength="50"
+                minLength={3}
+                maxLength={25}
                 placeholder="Petition Number"
                 onValueChange={(e) => setPetitionNumber(e)}
               />
@@ -278,8 +291,8 @@ export default function Petition() {
                     label="Place"
                     type="text"
                     isRequired={true}
-                    minLength="3"
-                    maxLength="20"
+                    minLength={3}
+                    maxLength={25}
                     placeholder="Place"
                     onValueChange={(e) => setPlace(e)}
                   />
@@ -292,23 +305,20 @@ export default function Petition() {
                   />
                 </div>
               </div>
-
               <CustomInput
                 label="Filing Type"
                 type="text"
                 isRequired={true}
-                minLength="3"
-                maxLength="20"
+                minLength={3}
+                maxLength={25}
                 placeholder="Filing Type"
                 onValueChange={(e) => setPetFillingtype(e)}
               />
-
               <CustomDatePicker
                 label="Date for Listing"
                 placeholder={"DD/MM/YYYY"}
                 onValueChange={(e) => setDateOfListing(e)}
               />
-
               <div className="form-group p-2">
                 <label className="p-2">Urgent Application?</label>
                 <div className="d-flex">
@@ -335,7 +345,6 @@ export default function Petition() {
                   </div>
                 </div>
               </div>
-
               <div className="form-group p-2">
                 <label className="p-2">No. of Annexures</label>
                 <select
@@ -349,24 +358,28 @@ export default function Petition() {
                   <option value={5}>5</option>
                 </select>
               </div>
-
-              <button
+              {/* <button
                 type="button"
-                className="btn btn-primary ml-2"
-                onClick={handleDocProcessing}
+                className="btn btn-warning ml-3"
+                onClick={handleDetailesback2}
               >
-                GENERATE TEMPLATE
+                Back <span>{"<<"}</span>
               </button>
+              &nbsp; */}
             </div>
 
-            <div className="col-lg-6">
-              {htmldocPreview.length && (
-                <PetitionPreview htmlContent={htmldocPreview} />
-              )}
-            </div>
+            <div className="col-lg-6"></div>
           </div>
-        )}
-      </div>
+        </div>
+
+        <button type="submit" className="btn btn-primary ml-2">
+          GENERATE TEMPLATE
+        </button>
+      </form>
+      &nbsp;
+      {htmldocPreview.length !== 0 && (
+        <PetitionPreview htmlContent={htmldocPreview} />
+      )}
     </>
   );
 }

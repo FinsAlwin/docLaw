@@ -10,7 +10,7 @@ export default function CustomInput(props) {
 
         <input
           type={props.type}
-          required={props.isRequired}
+          required
           minLength={props.minLength}
           maxLength={props.maxLength}
           className={`form-control ${styles.customInput}`}

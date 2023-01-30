@@ -33,7 +33,7 @@ export default function PetitionPreview(props) {
 
       <div
         size="A4"
-        className={styles.petitionPreview}
+        className={`${styles.petitionPreview} container`}
         dangerouslySetInnerHTML={{ __html: props.htmlContent }}
       />
     </>

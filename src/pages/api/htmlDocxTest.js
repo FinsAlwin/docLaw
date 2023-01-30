@@ -39,84 +39,147 @@ export default async function handler(req, res) {
 
     const documentPath = `${dir}/${fileName}`;
 
+    let annexuresNoList = [];
+
+    const listAnnexures = (annexuresNo) => {
+      for (let step = 1; step <= annexuresNo; step++) {
+        annexuresNoList.push(`<tr>
+            <td style="text-align:center;">
+              <p display: list-item; list-style-position: inside;text-align:center;"></p>
+            </td>
+            <td>
+              <p>ANNEXURE P-${step}</p>
+            </td>
+            <td style="text-align:center;">
+              <p> </p>
+            </td>
+          </tr>`);
+      }
+    };
+
+    listAnnexures(req.body.annexuresNo);
+
     const content = `<html lang="uk">
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
       <body>
-          <p style="text-align:center; font-size: 17px;"><strong>HIGHCOURT</strong><br /></p>
-          <p style="text-align:center; font-size: 17px;"><strong>JURIDICTION</strong><br /></p>
-          <p style="text-align:center; font-size: 17px;"><strong>PETITIONNUMBER</strong><br /></p>
-          <p style="font-size: 17px; font-weight:'bold';"><strong><u>IN THE MATTER OF:</u><br /></p>
-          <br />
-          <table style="text-align:center; width:100%;" cellspacing="0" cellpadding="0">
+          <p style="text-align:center;" ><strong>${req.body.courtName.toUpperCase()}</strong></p>
+          <p style="text-align:center;" ><strong>${req.body.juridiction.toUpperCase()}</strong></p>
+          <p style="text-align:center;" ><strong>${req.body.petitionNumber.toUpperCase()}</strong></p>
+          <p style="font-weight:'bold';"><strong><u>IN THE MATTER OF:</u></p>
+          
+          <table style="text-align:center; width:100%;" align="center" class="Table" border="0" cellspacing="0" cellpadding="0">
             <tr>
               <td style="border: none;" width:"80%">
-                <p style=" font-size: 17px;">PETITIONERNAME<br /></p>
+                <p>${req.body.petitionerName.toUpperCase()}</p>
               </td>
               <td style="border: none" width:"20%">
-                <p style=" font-size: 17px;">…PETITIONER<br /></p>
+                <p>…PETITIONER</p>
               </td>
             </tr>
             <tr>
               <td style="text-align:center; border: none;" colspan="2">
-                <p style=" font-size: 17px;">VERSUS<br /></p>
+                <p>VERSUS</p>
               </td>
             </tr>
             <tr>
               <td style="border: none" width:"80%">
-                <p style=" font-size: 17px;">RESPONDENTNAME<br /></p>
+                <p>${req.body.responsentName.toUpperCase()}</p>
               </td>
               <td style="border: none" width:"20%">
-                <p style=" font-size: 17px;">…RESPONDENT<br /></p>
+                <p>…RESPONDENT</p>
               </td>
             </tr>
           </table>
 
-          <p style="text-align:center; font-size: 17px; font-weight:'bold';"><strong><u>INDEX</u><br /></p>    
-
-          <br/>
-
-          <table style="text-align:center; width:100%;" cellspacing="0" cellpadding="0">
+          <p style="text-align:center; font-weight:'bold';"><strong><u>INDEX</u></p>    
+          <table style="width:100%;" align="center" class="Table">
             <tr>
               <th width="20%">
-                <p style="text-align:center; font-size: 17px;"><strong>S. No.</strong><br /></p>
+                <p style="text-align:center;"><strong>S. No.</strong></p>
               </th>
               <th width="50%">
-                <p style="text-align:center; font-size: 17px;"><strong>Particular</strong><br /></p>
+                <p style="text-align:center;"><strong>Particular</strong></p>
               </th>
               <th width="30%">
-                <p style="text-align:center; font-size: 17px;"><strong>Page no.</strong><br /></p>
+                <p style="text-align:center;"><strong>Page no.</strong></p>
               </th>
+            </tr>
+            ${
+              req.body.isUregent &&
+              ` <tr>
+              <td style="text-align:center;">
+                <p display: list-item; list-style-position: inside;text-align:center;"></p>
+              </td>
+              <td>
+                <p>Urgent Application </p>
+              </td>
+              <td style="text-align:center;">
+                <p> </p>
+              </td>
+            </tr>`
+            }
+            <tr>
+              <td style="text-align:center;">
+                <p display: list-item; list-style-position: inside;text-align:center;"></p>
+              </td>
+              <td>
+                <p>Notice of Motion</p>
+              </td>
+              <td style="text-align:center;">
+                <p> </p>
+              </td>
             </tr>
             <tr>
               <td style="text-align:center;">
-                <p style=" font-size: 17px; display: list-item; list-style-position: inside;text-align:center;"></p>
+                <p display: list-item; list-style-position: inside;text-align:center;"></p>
               </td>
               <td>
-                <p style=" font-size: 17px;">Urgent Application <br /></p>
+                <p>Memo of Parties</p>
               </td>
               <td style="text-align:center;">
-                <p style=" font-size: 17px;"> <br /></p>
+                <p> </p>
               </td>
             </tr>
+            <tr>
+              <td style="text-align:center;">
+                <p display: list-item; list-style-position: inside;text-align:center;"></p>
+              </td>
+              <td>
+                <p>Synopsis & List of Dates</p>
+              </td>
+              <td style="text-align:center;">
+                <p> </p>
+              </td>
+            </tr>
+            ${annexuresNoList.map((item) => item)}
           </table>
 
           <br/>
 
-          <p style="text-align:right; font-size: 17px;"><strong>FILED BY</strong><br /></p>
-          <p style="text-align:right; font-size: 17px;"><strong>ADOVOCATEFILLEDBY</strong><br /></p>
-          <p style="text-align:right; font-size: 17px;"><strong>ADVOCATEADDRESS1</strong><br /></p>
-          <p style="text-align:right; font-size: 17px;"><strong>ADVOCATEADDRESS2</strong><br /></p>
+          <p style="text-align:right;"><strong>FILED BY</strong></p>
+          <p style="text-align:right;"><strong>${req.body.advocateFilledBy.toUpperCase()}</strong></p>
+          <p style="text-align:right;"><strong>${req.body.advocateAddress1.toUpperCase()}</strong></p>
+          <p style="text-align:right;"><strong>${req.body.advocateAddress2.toUpperCase()}</strong></p>
 
           <br/>
 
-          <p style="font-size: 17px;"><strong>PETPLACE</strong><br /></p>
+          <p><strong>${req.body.place.toUpperCase()}</strong></p>
 
-          <p style="font-size: 17px;"><strong>PETDATE</strong><br /></p>
+          <p><strong>${req.body.date}</strong></p>
 
       </body>
       </html>`;
 
-    const data = await HTMLtoDOCX(content);
+    const data = await HTMLtoDOCX(content, null, {
+      table: { row: { cantSplit: true } },
+      pageNumber: true,
+      fontSize: 26,
+      font: "Bookman Old Style",
+      pageSize: {
+        width: "21cm",
+        height: "29.7cm;",
+      },
+    });
 
     // fs.writeFileSync(documentPath, data, (err) => {
     //   if (err) {
