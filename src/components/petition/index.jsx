@@ -6,6 +6,7 @@ import CustomInput from "../Form/input";
 import CustomTextArea from "../Form/textArea";
 import CustomDatePicker from "../Form/datePicker";
 import PetitionPreview from "./petitionPreview";
+import { ProgressBar } from "react-loader-spinner";
 
 import useSWR from "swr";
 
@@ -63,7 +64,10 @@ export default function Petition() {
 
   const [htmldocPreview, setHtmldocPreview] = useState("");
 
+  const [isloader, setIsloader] = useState(false);
+
   const handleDocProcessing = async (e) => {
+    await setIsloader(true);
     e.preventDefault();
     const payload = {
       courtName: highCourt,
@@ -100,7 +104,9 @@ export default function Petition() {
 
     if (res.status == 200) {
       await saveAs(dataRes.url);
-      setHtmldocPreview(dataRes.content);
+      await setHtmldocPreview(dataRes.content);
+
+      setIsloader(false);
     }
   };
 
@@ -128,6 +134,19 @@ export default function Petition() {
   };
   return (
     <>
+      {isloader && (
+        <div className={styles.loader}>
+          <ProgressBar
+            height="80"
+            width="80"
+            ariaLabel="progress-bar-loading"
+            wrapperStyle={{}}
+            wrapperClass="progress-bar-wrapper"
+            borderColor="#F4442E"
+            barColor="#51E5FF"
+          />
+        </div>
+      )}
       <form onSubmit={handleDocProcessing} className="container">
         <div className={`p-5 ${styles.formContainer}`}>
           <div className="row">

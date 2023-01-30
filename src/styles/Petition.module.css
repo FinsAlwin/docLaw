@@ -10,3 +10,10 @@
   box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
   padding: 100px;
 }
+
+.loader {
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+  z-index: 1;
+}
