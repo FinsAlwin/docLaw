@@ -7,6 +7,13 @@ import CustomTextArea from "../Form/textArea";
 import CustomDatePicker from "../Form/datePicker";
 import PetitionPreview from "./petitionPreview";
 import { ProgressBar } from "react-loader-spinner";
+import CustomButton from "../Button/customButton";
+import Box from "@mui/material/Box";
+import Tab from "@mui/material/Tab";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
+import CustomInputFile from "../Form/inputFile";
 
 import useSWR from "swr";
 
@@ -28,10 +35,6 @@ function loadFile(url, callback) {
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 export default function Petition() {
-  const [isHeadingActive, setIsHeadingActive] = useState(true);
-  const [isDetailsActive1, setIsDetailsActive1] = useState(false);
-  const [isDetailsActive2, setIsDetailsActive2] = useState(false);
-
   const [highCourt, setHighCourt] = useState("");
   const [juridiction, setJuridiction] = useState("");
   const [petitiontype, setPetitiontype] = useState("");
@@ -58,13 +61,23 @@ export default function Petition() {
 
   const [isUregent, setIsUregent] = useState(false);
 
-  const [annexuresNo, setAnnexures] = useState();
+  const [annexuresNo, setAnnexures] = useState(1);
 
   const [petitionTitle, setPetitionTitle] = useState("");
 
   const [htmldocPreview, setHtmldocPreview] = useState("");
 
   const [isloader, setIsloader] = useState(false);
+
+  const [value, setValue] = useState("1");
+
+  const [stateAnnexures, setStateAnnexures] = useState([]);
+
+  const [stateAnnexuresFile, setStateAnnexuresFile] = useState([]);
+
+  const handleTabChange = (event, newValue) => {
+    setValue(`${newValue}`);
+  };
 
   const handleDocProcessing = async (e) => {
     await setIsloader(true);
@@ -110,30 +123,65 @@ export default function Petition() {
     }
   };
 
-  const handleMainheader = () => {
-    setIsHeadingActive(false);
-    setIsDetailsActive1(true);
+  const onValueChangetextarea = (e, f) => {
+    setStateAnnexures((prevState) => ({
+      ...prevState,
+      [f]: { text: e },
+    }));
   };
 
-  const handleDetailes1 = () => {
-    setIsHeadingActive(false);
-    setIsDetailsActive1(false);
-    setIsDetailsActive2(true);
+  const handleFileUpload = (e, f) => {
+    console.log(e);
+    setStateAnnexuresFile((prevState) => ({
+      ...prevState,
+      [f]: { file: e },
+    }));
   };
 
-  const handleDetailesback1 = () => {
-    setIsHeadingActive(true);
-    setIsDetailsActive1(false);
-    setIsDetailsActive2(false);
+  const renderAnnexures = (annexuresNo) => {
+    let content = [];
+    for (let step = 1; step <= annexuresNo; step++) {
+      content.push(
+        <Tab
+          key={`${step}tab`}
+          value={`${step}`}
+          label={`ANNEXURE P-${step}`}
+        />
+      );
+    }
+
+    return content;
   };
 
-  const handleDetailesback2 = () => {
-    setIsHeadingActive(false);
-    setIsDetailsActive1(true);
-    setIsDetailsActive2(false);
+  const renderAnnexuresTabPannel = (annexuresNo) => {
+    let content = [];
+    for (let step = 1; step <= annexuresNo; step++) {
+      content.push(
+        <TabPanel key={`${step}tabPanel`} value={`${step}`}>
+          <CustomTextArea
+            label={`Title of Annexure P-${step}`}
+            isRequired={true}
+            minLength={3}
+            maxLength={100}
+            rows={3}
+            onValueChangetextarea={(e) =>
+              onValueChangetextarea(e, `annexuresNo${step}`)
+            }
+          />
+
+          <CustomInputFile
+            label="Upload attachment"
+            handleFileUpload={(e) => handleFileUpload(e, `annexuresNo${step}`)}
+          />
+        </TabPanel>
+      );
+    }
+
+    return content;
   };
+
   return (
-    <>
+    <div className={styles.petitionContainer}>
       {isloader && (
         <div className={styles.loader}>
           <ProgressBar
@@ -147,7 +195,10 @@ export default function Petition() {
           />
         </div>
       )}
-      <form onSubmit={handleDocProcessing} className="container">
+      <form
+        onSubmit={handleDocProcessing}
+        className="container d-flex justify-content-start align-items-center"
+      >
         <div className={`p-5 ${styles.formContainer}`}>
           <div className="row">
             <div className="col-lg-6">
@@ -189,6 +240,7 @@ export default function Petition() {
             </div>
           </div>
 
+          <hr />
           <div className="row">
             <div className="col-lg-6">
               <h4 className="p-2">DETAILS OF THE PETITIONER</h4>
@@ -293,6 +345,8 @@ export default function Petition() {
             </div>
           </div>
 
+          <hr />
+
           <div className="row">
             <div className="col-lg-6">
               <CustomInput
@@ -389,16 +443,41 @@ export default function Petition() {
 
             <div className="col-lg-6"></div>
           </div>
-        </div>
 
-        <button type="submit" className="btn btn-primary ml-2">
-          GENERATE TEMPLATE
-        </button>
+          <hr />
+
+          {/* <Box sx={{ width: "100%" }}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="wrapped label tabs example"
+            >
+              {renderAnnexures(annexuresNo)}
+            </Tabs>
+          </Box> */}
+
+          <Box sx={{ width: "100%", typography: "body1" }}>
+            <TabContext value={value}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <TabList onChange={handleTabChange}>
+                  {renderAnnexures(annexuresNo)}
+                </TabList>
+              </Box>
+
+              {renderAnnexuresTabPannel(annexuresNo)}
+            </TabContext>
+          </Box>
+
+          <hr />
+
+          <CustomButton name="GENERATE TEMPLATE" type="submit" />
+        </div>
       </form>
-      &nbsp;
+
+      {/* &nbsp;
       {htmldocPreview.length !== 0 && (
         <PetitionPreview htmlContent={htmldocPreview} />
-      )}
-    </>
+      )} */}
+    </div>
   );
 }
