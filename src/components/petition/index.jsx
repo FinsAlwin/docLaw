@@ -73,8 +73,6 @@ export default function Petition() {
 
   const [stateAnnexures, setStateAnnexures] = useState([]);
 
-  const [stateAnnexuresFile, setStateAnnexuresFile] = useState([]);
-
   const handleTabChange = (event, newValue) => {
     setValue(`${newValue}`);
   };
@@ -104,8 +102,9 @@ export default function Petition() {
       petitionTitle: petitionTitle,
       isUregent: isUregent,
       annexuresNo: annexuresNo,
+      annexuresContent: stateAnnexures,
     };
-    const res = await fetch(`/api/htmlDocxTest`, {
+    const res = await fetch(`/api/docxGen`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -131,11 +130,20 @@ export default function Petition() {
   };
 
   const handleFileUpload = (e, f) => {
-    console.log(e);
-    setStateAnnexuresFile((prevState) => ({
-      ...prevState,
-      [f]: { file: e },
-    }));
+    getBase64(e)
+      .then((result) => {
+        e["base64"] = result;
+
+        setStateAnnexures((prevPerson) => {
+          return {
+            ...prevPerson,
+            [f]: { file: result, text: prevPerson[f].text },
+          };
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const renderAnnexures = (annexuresNo) => {
@@ -169,15 +177,39 @@ export default function Petition() {
             }
           />
 
-          <CustomInputFile
-            label="Upload attachment"
-            handleFileUpload={(e) => handleFileUpload(e, `annexuresNo${step}`)}
-          />
+          {stateAnnexures.length !== 0 && (
+            <CustomInputFile
+              label="Upload attachment"
+              handleFileUpload={(e) =>
+                handleFileUpload(e, `annexuresNo${step}`)
+              }
+            />
+          )}
         </TabPanel>
       );
     }
 
     return content;
+  };
+
+  const getBase64 = (file) => {
+    return new Promise((resolve) => {
+      let fileInfo;
+      let baseURL = "";
+      // Make new FileReader
+      let reader = new FileReader();
+
+      // Convert the file to base64 text
+      reader.readAsDataURL(file);
+
+      // on reader load somthing...
+      reader.onload = () => {
+        // Make a fileInfo Object
+        baseURL = reader.result;
+
+        resolve(baseURL);
+      };
+    });
   };
 
   return (

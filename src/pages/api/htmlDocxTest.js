@@ -40,6 +40,7 @@ export default async function handler(req, res) {
     // const documentPath = `${dir}/${fileName}`;
 
     let annexuresNoList = [];
+    let annexuresContent = [];
 
     const listAnnexures = (annexuresNo) => {
       for (let step = 1; step <= annexuresNo; step++) {
@@ -57,7 +58,24 @@ export default async function handler(req, res) {
       }
     };
 
+    const listAnnexuresContent = (annexuresNo) => {
+      for (let step = 1; step <= annexuresNo; step++) {
+        annexuresContent.push(
+          `
+          <img src=${
+            req.body.annexuresContent[`annexuresNo${annexuresNo}`].file
+          } alt="Red dot" width="100%" height="100%"/>
+        
+        <p style="font-weight:'bold';"><strong><u>${
+          req.body.annexuresContent[`annexuresNo${annexuresNo}`].text
+        }</u></p>`
+        );
+      }
+    };
+
     listAnnexures(req.body.annexuresNo);
+
+    listAnnexuresContent(req.body.annexuresNo);
 
     const content = `<html lang="uk">
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -167,12 +185,16 @@ export default async function handler(req, res) {
 
           <p><strong>${req.body.date}</strong></p>
 
+            ${annexuresContent.map((item) => item)}
+
+          
       </body>
       </html>`;
 
     const data = await HTMLtoDOCX(content, null, {
       table: { row: { cantSplit: true } },
       pageNumber: true,
+      footer: true,
       fontSize: 26,
       font: "Bookman Old Style",
       pageSize: {
@@ -180,14 +202,6 @@ export default async function handler(req, res) {
         height: "29.7cm;",
       },
     });
-
-    // fs.writeFileSync(documentPath, data, (err) => {
-    //   if (err) {
-    //     reject(err);
-    //     return;
-    //   }
-    //   resolve();
-    // });
 
     const storageRef = ref(storage, `docx/${fileName}`);
 

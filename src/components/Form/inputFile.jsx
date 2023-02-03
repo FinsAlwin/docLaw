@@ -19,7 +19,7 @@ export default function InputFile(props) {
         <input
           id="actual-btn"
           type="file"
-          accept="image/*,.doc, .docx,.pdf"
+          accept="image/.png,.jpeg"
           hidden
           className={`form-control-file`}
           onChange={handleChange}
@@ -28,3 +28,5 @@ export default function InputFile(props) {
     </>
   );
 }
+
+//  accept = "image/*,.doc, .docx,.pdf";
