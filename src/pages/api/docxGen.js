@@ -810,8 +810,6 @@ export default async function handler(req, res) {
       });
     };
 
-    console.log(annexuresContent[`annexuresNo1`].file);
-
     const annexuresContentGen = (no) => {
       return new Paragraph({
         children: [
