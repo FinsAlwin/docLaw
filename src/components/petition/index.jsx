@@ -1,38 +1,21 @@
 import styles from "@/styles/Petition.module.css";
-import Docxtemplater from "docxtemplater";
 import { base_url } from "@/config";
 import { useState } from "react";
 import CustomInput from "../Form/input";
 import CustomTextArea from "../Form/textArea";
 import CustomDatePicker from "../Form/datePicker";
-import PetitionPreview from "./petitionPreview";
-import { ProgressBar } from "react-loader-spinner";
 import CustomButton from "../Button/customButton";
+import CustomSelect from "../Form/select";
+import PetitionPreview from "./petitionPreview";
+import { ThreeDots } from "react-loader-spinner";
+
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import CustomInputFile from "../Form/inputFile";
-
-import useSWR from "swr";
-
-import PizZip from "pizzip";
-import { saveAs } from "file-saver";
-
-let PizZipUtils = null;
-
-if (typeof window !== "undefined") {
-  import("pizzip/utils/index.js").then(function (r) {
-    PizZipUtils = r;
-  });
-}
-
-function loadFile(url, callback) {
-  PizZipUtils.getBinaryContent(url, callback);
-}
-
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+import DownloadFile from "../Button/downloadBtn";
 
 export default function Petition() {
   const [highCourt, setHighCourt] = useState("");
@@ -65,64 +48,85 @@ export default function Petition() {
 
   const [petitionTitle, setPetitionTitle] = useState("");
 
-  const [htmldocPreview, setHtmldocPreview] = useState("");
-
   const [isloader, setIsloader] = useState(false);
 
   const [value, setValue] = useState("1");
+  const [stateAnnexures, setStateAnnexures] = useState({});
 
-  const [stateAnnexures, setStateAnnexures] = useState([]);
+  const [downloadUrl, setDownloadUrl] = useState("");
 
   const handleTabChange = (event, newValue) => {
-    setValue(`${newValue}`);
+    setValue(newValue);
   };
 
   const handleDocProcessing = async (e) => {
     await setIsloader(true);
     e.preventDefault();
+
+    const indexList = [
+      "Urgent Application",
+      "Notice of Motion",
+      "Memo of Parties",
+      "Synopsis & List of Dates",
+      "Some Title",
+    ];
+
+    const annexureList = [];
+
+    for (let i = 1; i <= value; i++) {
+      annexureList.push(`ANNEXURE P-${i}`);
+    }
+
+    // const updatedIndexList = indexList.concat(annexureList, "Vakalatnama");
+
+    const updatedIndexList = indexList.concat(annexureList);
+
     const payload = {
-      courtName: highCourt,
-      juridiction: juridiction,
-      petitionNumber: petitionNumber,
-      petitionerName: petitionerName,
-      responsentName: respondentName,
-      petitiontype: petitiontype,
-      petitionerAdress1: petitionerAdress1,
-      petitionerAdress2: petitionerAdress2,
-      respondentAdress1: respondentAdress1,
-      respondentAdress2: respondentAdress2,
-      advocateFilledBy: advocateFilledBy,
-      advocateAddress1: advocateAddress1,
-      advocateAddress2: advocateAddress2,
-      place: place,
-      date: date,
-      petFillingtype: petFillingtype,
-      dateOfListing: dateOfListing,
-      isUregent: isUregent,
-      petitionTitle: petitionTitle,
-      isUregent: isUregent,
-      annexuresNo: annexuresNo,
-      annexuresContent: stateAnnexures,
-    };
-    const res = await fetch(`/api/docxGen`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+      isUrgent: isUregent,
+      placeHolder: {
+        "{HIGHCOURT}": highCourt,
+        "{JURIDICTION}": juridiction,
+        "{PETITIONNUMBER}": petitionNumber,
+        "{PETITIONERNAME}": petitionerName,
+        "{PETITIONERADDRESS1}": petitionerAdress1,
+        "{PETITIONERADDRESS2}": petitionerAdress2,
+        "{RESPONDENTNAME}": respondentName,
+        "{RESPONDENTADDRESS1}": respondentAdress1,
+        "{RESPONDENTADDRESS2}": respondentAdress2,
+        "{ADOVOCATEFILLEDBY}": advocateFilledBy,
+        "{ADVOCATEADDRESS1}": advocateAddress1,
+        "{ADVOCATEADDRESS2}": advocateAddress2,
+        "{PETPLACE}": place,
+        "{PETDATE}": date,
+        "{PETFILLINGTYPE}": petFillingtype,
+        "{DATEOFLISTING}": dateOfListing,
+        "{PETTITLE}": "Some Title",
       },
-      body: JSON.stringify(payload),
-    });
+      annexureListings: stateAnnexures,
+      indexList: updatedIndexList,
+    };
+
+    const res = await fetch(
+      `http://Docslaw-env-1.eba-qcrnhgd7.ap-south-1.elasticbeanstalk.com/api/v1/genDocx`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
 
     const dataRes = await res.json();
 
     if (res.status == 200) {
-      await saveAs(dataRes.url);
-      await setHtmldocPreview(dataRes.content);
-
-      setIsloader(false);
+      await setDownloadUrl(dataRes.download_url);
+      await setIsloader(false);
     }
   };
 
-  const onValueChangetextarea = (e, f) => {
+  const onValueChangeTextArea = (e, f) => {
     setStateAnnexures((prevState) => ({
       ...prevState,
       [f]: { text: e },
@@ -132,98 +136,120 @@ export default function Petition() {
   const handleFileUpload = (e, f) => {
     getBase64(e)
       .then((result) => {
-        e["base64"] = result;
-
-        setStateAnnexures((prevPerson) => {
-          return {
-            ...prevPerson,
-            [f]: { file: result, text: prevPerson[f].text },
-          };
-        });
+        setStateAnnexures((prevState) => ({
+          ...prevState,
+          [f]: { file: result, text: prevState[f]?.text },
+        }));
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const renderAnnexures = (annexuresNo) => {
+  const renderAnnexures = () => {
     let content = [];
     for (let step = 1; step <= annexuresNo; step++) {
       content.push(
         <Tab
-          key={`${step}tab`}
+          key={`tab-${step}`}
           value={`${step}`}
           label={`ANNEXURE P-${step}`}
         />
       );
     }
-
     return content;
   };
 
-  const renderAnnexuresTabPannel = (annexuresNo) => {
+  const renderAnnexuresTabPanel = () => {
     let content = [];
     for (let step = 1; step <= annexuresNo; step++) {
+      const annexureKey = `annexure-${step}`;
       content.push(
-        <TabPanel key={`${step}tabPanel`} value={`${step}`}>
+        <TabPanel key={`tab-panel-${step}`} value={`${step}`}>
           <CustomTextArea
             label={`Title of Annexure P-${step}`}
             isRequired={true}
             minLength={3}
             maxLength={100}
             rows={3}
-            onValueChangetextarea={(e) =>
-              onValueChangetextarea(e, `annexuresNo${step}`)
-            }
+            value={stateAnnexures[annexureKey]?.text}
+            onValueChange={(e) => onValueChangeTextArea(e, annexureKey)}
           />
 
-          {stateAnnexures.length !== 0 && (
-            <CustomInputFile
-              label="Upload attachment"
-              handleFileUpload={(e) =>
-                handleFileUpload(e, `annexuresNo${step}`)
-              }
-            />
-          )}
+          <CustomInputFile
+            label="Upload attachment"
+            handleFileUpload={(e) => handleFileUpload(e, annexureKey)}
+          />
         </TabPanel>
       );
     }
-
     return content;
   };
 
   const getBase64 = (file) => {
     return new Promise((resolve) => {
-      let fileInfo;
-      let baseURL = "";
-      // Make new FileReader
       let reader = new FileReader();
-
-      // Convert the file to base64 text
       reader.readAsDataURL(file);
-
-      // on reader load somthing...
       reader.onload = () => {
-        // Make a fileInfo Object
-        baseURL = reader.result;
-
-        resolve(baseURL);
+        resolve(reader.result);
       };
     });
+  };
+
+  const HighCourtList = [
+    {
+      "Allahabad High Court": ["Allahabad (Prayagraj)"],
+      "Bombay High Court": ["Mumbai", "Nagpur", "Aurangabad", "Goa"],
+      "Calcutta High Court": ["Kolkata (Calcutta)"],
+      "Delhi High Court": ["Delhi"],
+      "Gujarat High Court": ["Ahmedabad"],
+    },
+  ];
+
+  const optionsHighCourt = Object.keys(HighCourtList[0]).map((hc) => ({
+    label: hc,
+    value: hc,
+    cities: HighCourtList[0][hc],
+  }));
+
+  const optionsJurisdiction = highCourt
+    ? optionsHighCourt
+        .find((hc) => hc.value === highCourt)
+        .cities.map((city) => ({
+          label: city,
+          value: city,
+        }))
+    : [];
+
+  const optionsPetition = [
+    { label: "Petition Template X", value: "Petition_template_X" },
+  ];
+
+  const handleOptionChangeHighcourt = (e) => {
+    setHighCourt(e);
+  };
+
+  const handleOptionChangeJurisdiction = (e) => {
+    setJuridiction(e);
+  };
+
+  const handleOptionChangePetition = (e) => {
+    setPetitiontype(e);
   };
 
   return (
     <div className={styles.petitionContainer}>
       {isloader && (
         <div className={styles.loader}>
-          <ProgressBar
+          <ThreeDots
             height="80"
             width="80"
-            ariaLabel="progress-bar-loading"
+            radius="9"
+            color="#4fa94d"
+            ariaLabel="three-dots-loading"
             wrapperStyle={{}}
-            wrapperClass="progress-bar-wrapper"
-            borderColor="#F4442E"
-            barColor="#51E5FF"
+            wrapperClassName=""
+            visible={true}
           />
         </div>
       )}
@@ -233,237 +259,204 @@ export default function Petition() {
       >
         <div className={`p-5 ${styles.formContainer}`}>
           <div className="row">
-            <div className="col-lg-6">
-              <CustomInput
+            <div className="col-12">
+              <CustomSelect
+                options={optionsHighCourt}
+                onChange={handleOptionChangeHighcourt}
                 label="Select High Court*"
-                type="text"
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Name of High Court"
-                onValueChange={(e) => setHighCourt(e)}
               />
-              <CustomInput
+              <CustomSelect
+                options={optionsJurisdiction}
+                onChange={handleOptionChangeJurisdiction}
                 label="Select Jurisdiction*"
-                type="text"
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Jurisdiction"
-                onValueChange={(e) => setJuridiction(e)}
               />
-              <CustomInput
+              <CustomSelect
+                options={optionsPetition}
+                onChange={handleOptionChangePetition}
                 label="Select Type of Petition*"
-                type="text"
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Type of Petition"
-                onValueChange={(e) => setPetitiontype(e)}
               />
-
-              {/* <button
-                type="submit"
-                className="btn btn-primary ml-3"
-                onClick={handleMainheader}
-              >
-                Next <span>{">>"}</span>
-              </button> */}
             </div>
           </div>
 
-          <hr />
-          <div className="row">
-            <div className="col-lg-6">
-              <h4 className="p-2">DETAILS OF THE PETITIONER</h4>
-              <CustomInput
-                label="Name of the Petitioner*"
-                type="text"
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Name of Petitioner"
-                onValueChange={(e) => setPetitionerName(e)}
-              />
-
-              <CustomInput
-                label="Address of the Petitioner*"
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Address Line 1"
-                onValueChange={(e) => setPetitionerAdressLine1(e)}
-              />
-
-              <CustomInput
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Address Line 2"
-                onValueChange={(e) => setPetitionerAdressLine2(e)}
-              />
-
-              <h4 className="p-2">DETAILS OF THE RESPONDENT</h4>
-
-              <CustomInput
-                label="Name of the Respondent*"
-                type="text"
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Name of Petitioner"
-                onValueChange={(e) => setRespondentName(e)}
-              />
-
-              <CustomInput
-                label="Address of the Respondent*"
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Address Line 1"
-                onValueChange={(e) => setRespondentAdress1(e)}
-              />
-
-              <CustomInput
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Address Line 2"
-                onValueChange={(e) => setRespondentAdress2(e)}
-              />
-            </div>
-
-            <div className="col-lg-6">
-              <h4 className="p-2">DETAILS OF THE PETITIONER’s ADVOCATE</h4>
-              <CustomInput
-                label="Filed By*"
-                type="text"
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Petitioner’s Advocate Name"
-                onValueChange={(e) => setAdvocateFilledBy(e)}
-              />
-              <CustomInput
-                label="Address of the Advocate*"
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Address Line 1"
-                onValueChange={(e) => setAdvocateAddress1(e)}
-              />
-              <CustomInput
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Address Line 2"
-                onValueChange={(e) => setAdvocateAddress2(e)}
-              />
-              {/* <button
-                type="button"
-                className="btn btn-warning ml-3"
-                onClick={handleDetailesback1}
-              >
-                Back <span>{"<<"}</span>
-              </button>
-              &nbsp;
-              <button
-                type="submit"
-                className="btn btn-primary ml-3"
-                onClick={handleDetailes1}
-              >
-                Next <span>{">>"}</span>
-              </button> */}
-            </div>
-          </div>
-
-          <hr />
-
-          <div className="row">
-            <div className="col-lg-6">
-              <CustomInput
-                label="Petition Number"
-                type="text"
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Petition Number"
-                onValueChange={(e) => setPetitionNumber(e)}
-              />
+          {highCourt && juridiction && petitiontype && (
+            <>
+              <hr />
               <div className="row">
                 <div className="col-lg-6">
+                  <h4 className="p-2">DETAILS OF THE PETITIONER</h4>
                   <CustomInput
-                    label="Place"
+                    label="Name of the Petitioner*"
                     type="text"
                     isRequired={true}
                     minLength={3}
                     maxLength={25}
-                    placeholder="Place"
-                    onValueChange={(e) => setPlace(e)}
+                    placeholder="Name of Petitioner"
+                    onValueChange={(e) => setPetitionerName(e)}
+                  />
+
+                  <CustomInput
+                    label="Address of the Petitioner*"
+                    isRequired={true}
+                    minLength={3}
+                    maxLength={25}
+                    placeholder="Address Line 1"
+                    onValueChange={(e) => setPetitionerAdressLine1(e)}
+                  />
+
+                  <CustomInput
+                    isRequired={true}
+                    minLength={3}
+                    maxLength={25}
+                    placeholder="Address Line 2"
+                    onValueChange={(e) => setPetitionerAdressLine2(e)}
+                  />
+
+                  <h4 className="p-2">DETAILS OF THE RESPONDENT</h4>
+
+                  <CustomInput
+                    label="Name of the Respondent*"
+                    type="text"
+                    isRequired={true}
+                    minLength={3}
+                    maxLength={25}
+                    placeholder="Name of Petitioner"
+                    onValueChange={(e) => setRespondentName(e)}
+                  />
+
+                  <CustomInput
+                    label="Address of the Respondent*"
+                    isRequired={true}
+                    minLength={3}
+                    maxLength={25}
+                    placeholder="Address Line 1"
+                    onValueChange={(e) => setRespondentAdress1(e)}
+                  />
+
+                  <CustomInput
+                    isRequired={true}
+                    minLength={3}
+                    maxLength={25}
+                    placeholder="Address Line 2"
+                    onValueChange={(e) => setRespondentAdress2(e)}
                   />
                 </div>
+
                 <div className="col-lg-6">
-                  <CustomDatePicker
-                    label="Date"
-                    placeholder={"DD/MM/YYYY"}
-                    onValueChange={(e) => setDate(e)}
+                  <h4 className="p-2">DETAILS OF THE PETITIONER’s ADVOCATE</h4>
+                  <CustomInput
+                    label="Filed By*"
+                    type="text"
+                    isRequired={true}
+                    minLength={3}
+                    maxLength={25}
+                    placeholder="Petitioner’s Advocate Name"
+                    onValueChange={(e) => setAdvocateFilledBy(e)}
+                  />
+                  <CustomInput
+                    label="Address of the Advocate*"
+                    isRequired={true}
+                    minLength={3}
+                    maxLength={25}
+                    placeholder="Address Line 1"
+                    onValueChange={(e) => setAdvocateAddress1(e)}
+                  />
+                  <CustomInput
+                    isRequired={true}
+                    minLength={3}
+                    maxLength={25}
+                    placeholder="Address Line 2"
+                    onValueChange={(e) => setAdvocateAddress2(e)}
                   />
                 </div>
               </div>
-              <CustomInput
-                label="Filing Type"
-                type="text"
-                isRequired={true}
-                minLength={3}
-                maxLength={25}
-                placeholder="Filing Type"
-                onValueChange={(e) => setPetFillingtype(e)}
-              />
-              <CustomDatePicker
-                label="Date for Listing"
-                placeholder={"DD/MM/YYYY"}
-                onValueChange={(e) => setDateOfListing(e)}
-              />
-              <div className="form-group p-2">
-                <label className="p-2">Urgent Application?</label>
-                <div className="d-flex">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      value={isUregent}
-                      checked={isUregent}
-                      onChange={() => setIsUregent(true)}
-                    />
-                    <label className="form-check-label">Yes</label>
+
+              <hr />
+
+              <div className="row">
+                <div className="col-lg-6">
+                  <CustomInput
+                    label="Petition Number"
+                    type="text"
+                    isRequired={true}
+                    minLength={3}
+                    maxLength={25}
+                    placeholder="Petition Number"
+                    onValueChange={(e) => setPetitionNumber(e)}
+                  />
+                  <div className="row">
+                    <div className="col-lg-6">
+                      <CustomInput
+                        label="Place"
+                        type="text"
+                        isRequired={true}
+                        minLength={3}
+                        maxLength={25}
+                        placeholder="Place"
+                        onValueChange={(e) => setPlace(e)}
+                      />
+                    </div>
+                    <div className="col-lg-6">
+                      <CustomDatePicker
+                        label="Date"
+                        placeholder={"DD/MM/YYYY"}
+                        onValueChange={(e) => setDate(e)}
+                      />
+                    </div>
                   </div>
-                  &nbsp;&nbsp;
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      value={!isUregent}
-                      checked={!isUregent}
-                      onChange={() => setIsUregent(false)}
-                    />
-                    <label className="form-check-label">No</label>
+                  <CustomInput
+                    label="Filing Type"
+                    type="text"
+                    isRequired={true}
+                    minLength={3}
+                    maxLength={25}
+                    placeholder="Filing Type"
+                    onValueChange={(e) => setPetFillingtype(e)}
+                  />
+                  <CustomDatePicker
+                    label="Date for Listing"
+                    placeholder={"DD/MM/YYYY"}
+                    onValueChange={(e) => setDateOfListing(e)}
+                  />
+                  <div className="form-group p-2">
+                    <label className="p-2">Urgent Application?</label>
+                    <div className="d-flex">
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          value={isUregent}
+                          checked={isUregent}
+                          onChange={() => setIsUregent(true)}
+                        />
+                        <label className="form-check-label">Yes</label>
+                      </div>
+                      &nbsp;&nbsp;
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          value={!isUregent}
+                          checked={!isUregent}
+                          onChange={() => setIsUregent(false)}
+                        />
+                        <label className="form-check-label">No</label>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="form-group p-2">
-                <label className="p-2">No. of Annexures</label>
-                <select
-                  className="form-control w-25"
-                  onChange={(e) => setAnnexures(e.target.value)}
-                >
-                  <option value={1}>1</option>
-                  <option value={2}>2</option>
-                  <option value={3}>3</option>
-                  <option value={4}>4</option>
-                  <option value={5}>5</option>
-                </select>
-              </div>
-              {/* <button
+                  <div className="form-group p-2">
+                    <label className="p-2">No. of Annexures</label>
+                    <select
+                      className="form-control w-25"
+                      onChange={(e) => setAnnexures(e.target.value)}
+                    >
+                      <option value={1}>1</option>
+                      <option value={2}>2</option>
+                      <option value={3}>3</option>
+                      <option value={4}>4</option>
+                      <option value={5}>5</option>
+                    </select>
+                  </div>
+                  {/* <button
                 type="button"
                 className="btn btn-warning ml-3"
                 onClick={handleDetailesback2}
@@ -471,38 +464,35 @@ export default function Petition() {
                 Back <span>{"<<"}</span>
               </button>
               &nbsp; */}
-            </div>
+                </div>
 
-            <div className="col-lg-6"></div>
-          </div>
+                <div className="col-lg-6"></div>
+              </div>
 
-          <hr />
+              <hr />
 
-          {/* <Box sx={{ width: "100%" }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="wrapped label tabs example"
-            >
-              {renderAnnexures(annexuresNo)}
-            </Tabs>
-          </Box> */}
-
-          <Box sx={{ width: "100%", typography: "body1" }}>
-            <TabContext value={value}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <TabList onChange={handleTabChange}>
-                  {renderAnnexures(annexuresNo)}
-                </TabList>
+              <Box sx={{ width: "100%", typography: "body1" }}>
+                <TabContext value={value}>
+                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <TabList onChange={handleTabChange}>
+                      {renderAnnexures()}
+                    </TabList>
+                  </Box>
+                  {renderAnnexuresTabPanel()}
+                </TabContext>
               </Box>
 
-              {renderAnnexuresTabPannel(annexuresNo)}
-            </TabContext>
-          </Box>
+              <hr />
 
-          <hr />
+              {downloadUrl.length == 0 && (
+                <CustomButton name="GENERATE TEMPLATE" type="submit" />
+              )}
 
-          <CustomButton name="GENERATE TEMPLATE" type="submit" />
+              {downloadUrl.length !== 0 && (
+                <DownloadFile fileUrl={downloadUrl} />
+              )}
+            </>
+          )}
         </div>
       </form>
 

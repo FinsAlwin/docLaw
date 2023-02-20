@@ -2,7 +2,7 @@ import styles from "@/styles/Form.module.css";
 
 export default function CustomTextArea(props) {
   const handleChange = (e) => {
-    props.onValueChangetextarea(e.target.value);
+    props.onValueChange(e.target.value);
   };
   return (
     <div className="form-group p-2">

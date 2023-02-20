@@ -17,6 +17,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
+        <nav className="navbar navbar-light bg-light p-2">
+          <h3>Docs-Law Demo</h3>
+        </nav>
+
         <Petition />
       </main>
     </>
