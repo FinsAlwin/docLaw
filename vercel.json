@@ -4,11 +4,16 @@
       "source": "/*",
       "has": [
         {
+          "type": "host",
+          "value": "doc-eyzfseekc-finsalwin.vercel.app"
+        },
+        {
           "type": "scheme",
           "value": "https"
         }
       ],
-      "destination": "http://doc-eyzfseekc-finsalwin.vercel.app/:splat"
+      "destination": "http://doc-eyzfseekc-finsalwin.vercel.app//:splat",
+      "statusCode": 307
     }
   ]
 }
