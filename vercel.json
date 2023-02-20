@@ -8,7 +8,6 @@
           "value": "https"
         }
       ],
-      "status": 307,
       "destination": "http://doc-eyzfseekc-finsalwin.vercel.app/:splat"
     }
   ]
